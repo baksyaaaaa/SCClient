@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.cs.CSClient</id>
+  <name>CSClient</name>
+  <summary>Next-generation open source Minecraft launcher</summary>
+  <developer id="org.cs">
+    <name>CS Inc.</name>
+  </developer>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  <description>
+    <p>CSClient is a next-generation open source Minecraft launcher by CS.</p>
+  </description>
+  <launchable type="desktop-id">org.cs.CSClient.desktop</launchable>
+  <url type="homepage">https://polyfrost.org/projects/oneclient</url>
+  <url type="bugtracker">https://github.com/baksyaaaaa/SCClient/issues</url>
+  <url type="vcs-browser">https://github.com/baksyaaaaa/SCClient</url>
+  <content_rating type="oars-1.1"/>
+  <provides>
+    <binary>csclient_app</binary>
+  </provides>
+</component>

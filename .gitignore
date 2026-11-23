@@ -1,0 +1,6 @@
+/target
+.DS_Store
+/.idea
+CSLauncher.iml
+
+/packages/csclient_app/icons/generated/

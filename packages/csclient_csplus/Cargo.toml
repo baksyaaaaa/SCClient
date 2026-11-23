@@ -1,0 +1,43 @@
+[package]
+name = "csclient_csplus"
+description = "CS+ playtime reporting"
+version.workspace = true
+license.workspace = true
+edition.workspace = true
+repository.workspace = true
+documentation.workspace = true
+readme.workspace = true
+homepage.workspace = true
+authors.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+csclient_auth.workspace = true
+csclient_common.workspace = true
+csclient_events.workspace = true
+csclient_net.workspace = true
+csio.workspace = true
+
+reqwest.workspace = true
+reqwest-websocket.workspace = true
+tokio.workspace = true
+futures-util.workspace = true
+tokio-util.workspace = true
+
+bytes.workspace = true
+chrono.workspace = true
+image.workspace = true
+rand.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha1.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+url.workspace = true
+uuid.workspace = true
+
+[dev-dependencies]
+async-tungstenite = { version = "=0.35.0", features = ["tokio-runtime"] }
+tokio = { workspace = true }
