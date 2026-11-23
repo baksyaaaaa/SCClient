@@ -247,6 +247,15 @@ async fn start(
         }
     };
 
+    // Chrome Client's PolyPlus + mod in place of Polyfrost's PolyPlus
+    crate::game::chrome::apply(
+        state,
+        cluster_id,
+        cluster.mc_loader,
+        &csclient_common::version::normalize_mc_version_input(&cluster.mc_version),
+    )
+    .await;
+
     let global = state.settings.read().global_game_settings.clone();
     let profile = state.clusters.resolve_settings(&global, &cluster).await?;
 
