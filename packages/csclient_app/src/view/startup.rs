@@ -1,7 +1,6 @@
 use freya::animation::{AnimNum, Ease, Function, OnCreation, OnFinish, use_animation};
 use freya::{prelude::*, router::*};
 
-use crate::AppAssets;
 use crate::Route;
 use crate::components::{Button, progress_track};
 use crate::hooks::use_dispatch;
@@ -87,8 +86,6 @@ impl Component for Startup {
                 .ease(Ease::InOut)
                 .function(Function::Sine)
         });
-
-        let logo = use_memo(|| AppAssets::get_bytes("logo.svg").unwrap_or_default());
 
         if launcher.needs_location {
             let _ = RouterContext::get().replace(Route::OnboardingWelcome {});
@@ -199,11 +196,7 @@ impl Component for Startup {
             .vertical()
             .spacing(14.)
             .child(
-                SvgViewer::new(("logo.svg", logo.read().cloned()))
-                    .show_loader(false)
-                    .width(Size::px(288.))
-                    .height(Size::px(60.))
-                    .color(colors::fg_primary()),
+                crate::theme::logo_image(120.),
             )
             .child(
                 label()

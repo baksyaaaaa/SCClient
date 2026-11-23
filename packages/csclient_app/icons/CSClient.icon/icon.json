@@ -1,17 +1,19 @@
 {
-  "fill": "automatic",
+  "fill": {
+    "solid": "srgb:0.00000,0.00000,0.00000,1.00000"
+  },
   "groups": [
     {
       "layers": [
         {
           "blend-mode": "normal",
           "fill": "automatic",
-          "glass": true,
+          "glass": false,
           "hidden": false,
-          "image-name": "csclient-mark.svg",
+          "image-name": "csclient-mark.png",
           "name": "csclient-mark",
           "position": {
-            "scale": 3.6,
+            "scale": 1.0,
             "translation-in-points": [
               0,
               0
@@ -24,7 +26,7 @@
         "opacity": 0.5
       },
       "translucency": {
-        "enabled": true,
+        "enabled": false,
         "value": 0.5
       }
     }

@@ -487,14 +487,22 @@ pub fn wordmark(width: f32, height: f32, color: Color) -> Element {
             .color(color)
             .into_element();
     }
-    SvgViewer::new((
-        "logo.svg",
-        AppAssets::get_bytes("logo.svg").unwrap_or_default(),
+    let _ = (width, color);
+    logo_image(height)
+}
+
+/// Aspect ratio (width / height) of `assets/logo.png`.
+pub const LOGO_ASPECT: f32 = 464. / 240.;
+
+/// The full-colour CS logo, sized by height.
+pub fn logo_image(height: f32) -> Element {
+    ImageViewer::new((
+        "logo.png",
+        AppAssets::get_bytes("logo.png").unwrap_or_default(),
     ))
-    .show_loader(false)
-    .width(Size::px(width))
+    .width(Size::px(height * LOGO_ASPECT))
     .height(Size::px(height))
-    .color(color)
+    .aspect_ratio(AspectRatio::Min)
     .into_element()
 }
 
