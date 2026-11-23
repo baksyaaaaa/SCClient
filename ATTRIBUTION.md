@@ -2,11 +2,11 @@
 
 The source code of this repository is licensed under the GNU General Public License, Version 3 only, which is provided in the file [LICENSE](./LICENSE), with a header provided below. Certain files in our library wrappers may be under a different license or [require credit](#additional-libraries), with their specific headers outlined in the below non-exhaustive list.
 
-## CSLauncher
+## SCLauncher
 
 ```txt
-CSLauncher - Open source Rust-based Minecraft Launcher
-Copyright (C) 2023~CURRENT  CS and Contributors
+SCLauncher - Open source Rust-based Minecraft Launcher
+Copyright (C) 2023~CURRENT  SC and Contributors
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3 of the License.
 
@@ -16,11 +16,11 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
 You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```
 
-## CSClient
+## SCClient
 
 ```txt
-CSClient - A Minecraft Launcher
-Copyright (C) 2023~CURRENT  CS and Contributors
+SCClient - A Minecraft Launcher
+Copyright (C) 2023~CURRENT  SC and Contributors
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3 of the License.
 
@@ -30,12 +30,12 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public
 You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ```
 
-## CS branding
+## SC branding
 
-Any files depicting [CS branding](https://polyfrost.org/legal/branding), including the CS logo, any landing and background images, the OneConfig logo, the CSLauncher logo, and variations thereof, are licensed under the following:
+Any files depicting [SC branding](https://polyfrost.org/legal/branding), including the SC logo, any landing and background images, the OneConfig logo, the SCLauncher logo, and variations thereof, are licensed under the following:
 
 ```txt
-All rights reserved. Copyright (C) 2022~CURRENT CS
+All rights reserved. Copyright (C) 2022~CURRENT SC
 ```
 
 This includes, but may not be limited to, the following files:
@@ -45,7 +45,7 @@ This includes, but may not be limited to, the following files:
 
 ## Additional Libraries
 
-The following are libraries, projects, and codebases which we (CS and Contributors) copied or modified, with additional attribution inline (THIS IS A NON-EXHAUSTIVE LIST, IF WE ARE MISSING A LICENSE, PLEASE LEAVE A TICKET IN [our Discord server](https://polyfrost.org/discord)):
+The following are libraries, projects, and codebases which we (SC and Contributors) copied or modified, with additional attribution inline (THIS IS A NON-EXHAUSTIVE LIST, IF WE ARE MISSING A LICENSE, PLEASE LEAVE A TICKET IN [our Discord server](https://polyfrost.org/discord)):
 
 ## [Gamemode]
 

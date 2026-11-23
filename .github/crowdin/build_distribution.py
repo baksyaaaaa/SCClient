@@ -10,7 +10,7 @@ import urllib.request
 import zipfile
 from pathlib import Path
 
-USER_AGENT = "CS/CSLauncher (crowdin-publish; +https://github.com/baksyaaaaa/SCClient)"
+USER_AGENT = "SC/SCLauncher (crowdin-publish; +https://github.com/baksyaaaaa/SCClient)"
 API_URL = "https://api.crowdin.com/api/v2"
 BUILD_TIMEOUT = 900
 POLL_INTERVAL = 5

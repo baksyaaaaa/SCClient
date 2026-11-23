@@ -1,0 +1,45 @@
+[package]
+name = "scclient_content"
+description = "Mod providers, the artifact store, and SC bundles"
+version.workspace = true
+license.workspace = true
+edition.workspace = true
+repository.workspace = true
+documentation.workspace = true
+readme.workspace = true
+homepage.workspace = true
+authors.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+scclient_common.workspace = true
+scclient_db.workspace = true
+scclient_events.workspace = true
+scclient_net.workspace = true
+scio.workspace = true
+
+async-trait.workspace = true
+async_zip.workspace = true
+futures-lite.workspace = true
+futures-util.workspace = true
+tokio.workspace = true
+
+htmd.workspace = true
+pulldown-cmark.workspace = true
+
+chrono.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sqlx.workspace = true
+thiserror.workspace = true
+toml.workspace = true
+tracing.workspace = true
+url.workspace = true
+uuid.workspace = true
+
+[dev-dependencies]
+tokio = { workspace = true }
+scio = { workspace = true, features = ["testing"] }

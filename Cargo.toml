@@ -6,8 +6,8 @@ resolver = "3"
 
 [workspace.package]
 authors = [
-  "CS",
-  "CS Contributors",
+  "SC",
+  "SC Contributors",
 ]
 documentation = "https://github.com/baksyaaaaa/SCClient"
 edition = "2024"
@@ -20,20 +20,20 @@ version = "2.12.1"
 
 [workspace.dependencies]
 # core
-csclient_auth = {path = "./packages/csclient_auth"}
-csclient_cluster = {path = "./packages/csclient_cluster"}
-csclient_common = {path = "./packages/csclient_common"}
-csclient_content = {path = "./packages/csclient_content"}
-csclient_core = {path = "./packages/csclient_core"}
-csclient_db = {path = "./packages/csclient_db"}
-csclient_discord = {path = "./packages/csclient_discord"}
-csclient_events = {path = "./packages/csclient_events"}
-csclient_java = {path = "./packages/csclient_java"}
-csclient_macro = {path = "./packages/csclient_macro"}
-csclient_mc = {path = "./packages/csclient_mc"}
-csclient_net = {path = "./packages/csclient_net"}
-csclient_csplus = {path = "./packages/csclient_csplus"}
-csio = {path = "./packages/csio"}
+scclient_auth = {path = "./packages/scclient_auth"}
+scclient_cluster = {path = "./packages/scclient_cluster"}
+scclient_common = {path = "./packages/scclient_common"}
+scclient_content = {path = "./packages/scclient_content"}
+scclient_core = {path = "./packages/scclient_core"}
+scclient_db = {path = "./packages/scclient_db"}
+scclient_discord = {path = "./packages/scclient_discord"}
+scclient_events = {path = "./packages/scclient_events"}
+scclient_java = {path = "./packages/scclient_java"}
+scclient_macro = {path = "./packages/scclient_macro"}
+scclient_mc = {path = "./packages/scclient_mc"}
+scclient_net = {path = "./packages/scclient_net"}
+scclient_scplus = {path = "./packages/scclient_scplus"}
+scio = {path = "./packages/scio"}
 
 # core (extra)
 discord-rich-presence = {version = "=1.1.0"}

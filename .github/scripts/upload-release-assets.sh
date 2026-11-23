@@ -22,26 +22,26 @@ fi
 # The updater bundle isn't always arch-tagged by cargo-packager, so the two
 # macOS legs would collide on the release. Rename the updater artifact + its .sig
 # to an arch-unique name before upload, and point the manifest at that name.
-unique="CSClient_${VERSION}_${OS_KEY}_${ARCH}.${ext}"
+unique="SCClient_${VERSION}_${OS_KEY}_${ARCH}.${ext}"
 cp "$updater_file" "$OUT_DIR/$unique"
 cp "$updater_file.sig" "$OUT_DIR/$unique.sig"
 
-# cargo-packager names the .deb after the binary (csclient_app_<ver>_amd64.deb).
-# Rename it to the same CSClient_<ver>_<os>_<arch> scheme as the other assets so
-# the AUR csclient-bin package can point at a stable, predictable URL.
+# cargo-packager names the .deb after the binary (scclient_app_<ver>_amd64.deb).
+# Rename it to the same SCClient_<ver>_<os>_<arch> scheme as the other assets so
+# the AUR scclient-bin package can point at a stable, predictable URL.
 deb_unique=""
 deb_matches=("$OUT_DIR"/*.deb)
 if [ -e "${deb_matches[0]:-}" ]; then
-  deb_unique="CSClient_${VERSION}_${OS_KEY}_${ARCH}.deb"
+  deb_unique="SCClient_${VERSION}_${OS_KEY}_${ARCH}.deb"
   cp "${deb_matches[0]}" "$OUT_DIR/$deb_unique"
 fi
 
 # Same treatment for the .rpm (cargo-generate-rpm names it
-# csclient_app-<ver>-1.x86_64.rpm).
+# scclient_app-<ver>-1.x86_64.rpm).
 rpm_unique=""
 rpm_matches=("$OUT_DIR"/*.rpm)
 if [ -e "${rpm_matches[0]:-}" ]; then
-  rpm_unique="CSClient_${VERSION}_${OS_KEY}_${ARCH}.rpm"
+  rpm_unique="SCClient_${VERSION}_${OS_KEY}_${ARCH}.rpm"
   cp "${rpm_matches[0]}" "$OUT_DIR/$rpm_unique"
 fi
 

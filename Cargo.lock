@@ -1604,388 +1604,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "csclient_app"
-version = "2.12.1"
-dependencies = [
- "accesskit",
- "anyhow",
- "arboard",
- "base64 0.23.1",
- "bytes 1.12.1",
- "cargo-packager-updater",
- "chrono",
- "csclient_auth",
- "csclient_cluster",
- "csclient_common",
- "csclient_content",
- "csclient_core",
- "csclient_csplus",
- "csclient_db",
- "csclient_events",
- "csclient_java",
- "csclient_macro",
- "csclient_mc",
- "csclient_net",
- "csio",
- "directories",
- "dunce",
- "emojis",
- "freya",
- "freya-core",
- "freya-skia-safe",
- "freya-testing",
- "freya-winit",
- "futures-util",
- "image",
- "inventory",
- "mimalloc",
- "notify",
- "open",
- "percent-encoding",
- "plusrenderer",
- "pulldown-cmark",
- "regex",
- "rfd",
- "rust-embed",
- "serde",
- "serde_json",
- "sys-locale",
- "sysinfo",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "url",
- "uuid 1.26.1",
- "windows",
- "winresource",
- "zbus",
-]
-
-[[package]]
-name = "csclient_auth"
-version = "2.12.1"
-dependencies = [
- "base64 0.23.1",
- "chrono",
- "csclient_common",
- "csclient_events",
- "csclient_net",
- "csio",
- "md-5",
- "rand 0.10.3",
- "reqwest 0.13.5",
- "serde",
- "serde_json",
- "sha2 0.11.0",
- "thiserror 2.0.21",
- "tokio",
- "tokio-util",
- "tracing",
- "url",
- "uuid 1.26.1",
-]
-
-[[package]]
-name = "csclient_cluster"
-version = "2.12.1"
-dependencies = [
- "bytes 1.12.1",
- "chrono",
- "csclient_common",
- "csclient_db",
- "csclient_net",
- "csio",
- "image",
- "regex",
- "reqwest 0.13.5",
- "serde",
- "serde_json",
- "serde_repr",
- "sqlx",
- "strum",
- "thiserror 2.0.21",
- "tokio",
- "tracing",
- "trash",
-]
-
-[[package]]
-name = "csclient_common"
-version = "2.12.1"
-dependencies = [
- "directories",
- "interfrost",
- "serde",
- "strum",
- "sysinfo",
- "thiserror 2.0.21",
- "url",
-]
-
-[[package]]
-name = "csclient_content"
-version = "2.12.1"
-dependencies = [
- "async-trait",
- "async_zip",
- "chrono",
- "csclient_common",
- "csclient_db",
- "csclient_events",
- "csclient_net",
- "csio",
- "futures-lite",
- "futures-util",
- "htmd",
- "pulldown-cmark",
- "reqwest 0.13.5",
- "serde",
- "serde_json",
- "sqlx",
- "thiserror 2.0.21",
- "tokio",
- "toml",
- "tracing",
- "url",
- "uuid 1.26.1",
-]
-
-[[package]]
-name = "csclient_core"
-version = "2.12.1"
-dependencies = [
- "async-compression",
- "async-stream",
- "async-tempfile",
- "async-trait",
- "async-tungstenite 0.35.0",
- "async_zip",
- "base64 0.23.1",
- "bytes 1.12.1",
- "chrono",
- "csclient_auth",
- "csclient_cluster",
- "csclient_common",
- "csclient_content",
- "csclient_csplus",
- "csclient_db",
- "csclient_discord",
- "csclient_events",
- "csclient_java",
- "csclient_mc",
- "csclient_net",
- "csio",
- "digest 0.11.3",
- "directories",
- "discord-rich-presence",
- "dunce",
- "futures-lite",
- "futures-util",
- "htmd",
- "image",
- "indicatif",
- "interfrost",
- "libc",
- "md-5",
- "parking_lot",
- "rand 0.10.3",
- "regex",
- "reqwest 0.13.5",
- "reqwest-websocket",
- "sanitize-filename",
- "sentry",
- "sentry-tracing",
- "serde",
- "serde_json",
- "serde_repr",
- "sha1 0.11.0",
- "sha2 0.11.0",
- "sqlx",
- "strum",
- "sysinfo",
- "thiserror 2.0.21",
- "tokio",
- "tokio-stream",
- "tokio-util",
- "toml",
- "tracing",
- "tracing-futures",
- "tracing-subscriber",
- "trash",
- "url",
- "uuid 1.26.1",
-]
-
-[[package]]
-name = "csclient_csplus"
-version = "2.12.1"
-dependencies = [
- "async-tungstenite 0.35.0",
- "bytes 1.12.1",
- "chrono",
- "csclient_auth",
- "csclient_common",
- "csclient_events",
- "csclient_net",
- "csio",
- "futures-util",
- "image",
- "rand 0.10.3",
- "reqwest 0.13.5",
- "reqwest-websocket",
- "serde",
- "serde_json",
- "sha1 0.11.0",
- "thiserror 2.0.21",
- "tokio",
- "tokio-util",
- "tracing",
- "url",
- "uuid 1.26.1",
-]
-
-[[package]]
-name = "csclient_db"
-version = "2.12.1"
-dependencies = [
- "async-tempfile",
- "chrono",
- "dunce",
- "serde",
- "serde_json",
- "sqlx",
- "thiserror 2.0.21",
- "tokio",
- "tracing",
-]
-
-[[package]]
-name = "csclient_discord"
-version = "2.12.1"
-dependencies = [
- "chrono",
- "csclient_common",
- "discord-rich-presence",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "csclient_events"
-version = "2.12.1"
-dependencies = [
- "thiserror 2.0.21",
- "tokio",
- "tracing",
- "uuid 1.26.1",
-]
-
-[[package]]
-name = "csclient_java"
-version = "2.12.1"
-dependencies = [
- "astral-tokio-tar",
- "async-tempfile",
- "async-trait",
- "async_zip",
- "csclient_common",
- "csclient_events",
- "csclient_net",
- "csio",
- "futures-lite",
- "futures-util",
- "libc",
- "reqwest 0.13.5",
- "serde",
- "serde_json",
- "thiserror 2.0.21",
- "tokio",
- "tracing",
- "url",
- "windows-sys 0.61.2",
-]
-
-[[package]]
-name = "csclient_macro"
-version = "2.12.1"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 3.0.6",
-]
-
-[[package]]
-name = "csclient_mc"
-version = "2.12.1"
-dependencies = [
- "base64 0.23.1",
- "chrono",
- "csclient_common",
- "csclient_events",
- "csclient_net",
- "csio",
- "futures-util",
- "interfrost",
- "reqwest 0.13.5",
- "serde",
- "serde_json",
- "thiserror 2.0.21",
- "tokio",
- "tracing",
- "url",
- "uuid 1.26.1",
-]
-
-[[package]]
-name = "csclient_net"
-version = "2.12.1"
-dependencies = [
- "arc-swap",
- "async-trait",
- "bytes 1.12.1",
- "csclient_common",
- "csclient_events",
- "csio",
- "futures-lite",
- "futures-util",
- "reqwest 0.13.5",
- "serde",
- "serde_json",
- "thiserror 2.0.21",
- "tokio",
- "tracing",
- "url",
- "uuid 1.26.1",
-]
-
-[[package]]
-name = "csio"
-version = "2.12.1"
-dependencies = [
- "astral-tokio-tar",
- "async-compression",
- "async-tempfile",
- "async_zip",
- "bytes 1.12.1",
- "digest 0.11.3",
- "dunce",
- "futures-lite",
- "futures-util",
- "junction",
- "sanitize-filename",
- "serde",
- "serde_json",
- "sha1 0.11.0",
- "sha2 0.11.0",
- "thiserror 2.0.21",
- "tokio",
- "tokio-util",
- "tracing",
- "windows-sys 0.61.2",
-]
-
-[[package]]
 name = "ctor"
 version = "0.2.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6266,11 +5884,393 @@ dependencies = [
 ]
 
 [[package]]
+name = "scclient_app"
+version = "2.12.1"
+dependencies = [
+ "accesskit",
+ "anyhow",
+ "arboard",
+ "base64 0.23.1",
+ "bytes 1.12.1",
+ "cargo-packager-updater",
+ "chrono",
+ "directories",
+ "dunce",
+ "emojis",
+ "freya",
+ "freya-core",
+ "freya-skia-safe",
+ "freya-testing",
+ "freya-winit",
+ "futures-util",
+ "image",
+ "inventory",
+ "mimalloc",
+ "notify",
+ "open",
+ "percent-encoding",
+ "plusrenderer",
+ "pulldown-cmark",
+ "regex",
+ "rfd",
+ "rust-embed",
+ "scclient_auth",
+ "scclient_cluster",
+ "scclient_common",
+ "scclient_content",
+ "scclient_core",
+ "scclient_db",
+ "scclient_events",
+ "scclient_java",
+ "scclient_macro",
+ "scclient_mc",
+ "scclient_net",
+ "scclient_scplus",
+ "scio",
+ "serde",
+ "serde_json",
+ "sys-locale",
+ "sysinfo",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "url",
+ "uuid 1.26.1",
+ "windows",
+ "winresource",
+ "zbus",
+]
+
+[[package]]
+name = "scclient_auth"
+version = "2.12.1"
+dependencies = [
+ "base64 0.23.1",
+ "chrono",
+ "md-5",
+ "rand 0.10.3",
+ "reqwest 0.13.5",
+ "scclient_common",
+ "scclient_events",
+ "scclient_net",
+ "scio",
+ "serde",
+ "serde_json",
+ "sha2 0.11.0",
+ "thiserror 2.0.21",
+ "tokio",
+ "tokio-util",
+ "tracing",
+ "url",
+ "uuid 1.26.1",
+]
+
+[[package]]
+name = "scclient_cluster"
+version = "2.12.1"
+dependencies = [
+ "bytes 1.12.1",
+ "chrono",
+ "image",
+ "regex",
+ "reqwest 0.13.5",
+ "scclient_common",
+ "scclient_db",
+ "scclient_net",
+ "scio",
+ "serde",
+ "serde_json",
+ "serde_repr",
+ "sqlx",
+ "strum",
+ "thiserror 2.0.21",
+ "tokio",
+ "tracing",
+ "trash",
+]
+
+[[package]]
+name = "scclient_common"
+version = "2.12.1"
+dependencies = [
+ "directories",
+ "interfrost",
+ "serde",
+ "strum",
+ "sysinfo",
+ "thiserror 2.0.21",
+ "url",
+]
+
+[[package]]
+name = "scclient_content"
+version = "2.12.1"
+dependencies = [
+ "async-trait",
+ "async_zip",
+ "chrono",
+ "futures-lite",
+ "futures-util",
+ "htmd",
+ "pulldown-cmark",
+ "reqwest 0.13.5",
+ "scclient_common",
+ "scclient_db",
+ "scclient_events",
+ "scclient_net",
+ "scio",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "thiserror 2.0.21",
+ "tokio",
+ "toml",
+ "tracing",
+ "url",
+ "uuid 1.26.1",
+]
+
+[[package]]
+name = "scclient_core"
+version = "2.12.1"
+dependencies = [
+ "async-compression",
+ "async-stream",
+ "async-tempfile",
+ "async-trait",
+ "async-tungstenite 0.35.0",
+ "async_zip",
+ "base64 0.23.1",
+ "bytes 1.12.1",
+ "chrono",
+ "digest 0.11.3",
+ "directories",
+ "discord-rich-presence",
+ "dunce",
+ "futures-lite",
+ "futures-util",
+ "htmd",
+ "image",
+ "indicatif",
+ "interfrost",
+ "libc",
+ "md-5",
+ "parking_lot",
+ "rand 0.10.3",
+ "regex",
+ "reqwest 0.13.5",
+ "reqwest-websocket",
+ "sanitize-filename",
+ "scclient_auth",
+ "scclient_cluster",
+ "scclient_common",
+ "scclient_content",
+ "scclient_db",
+ "scclient_discord",
+ "scclient_events",
+ "scclient_java",
+ "scclient_mc",
+ "scclient_net",
+ "scclient_scplus",
+ "scio",
+ "sentry",
+ "sentry-tracing",
+ "serde",
+ "serde_json",
+ "serde_repr",
+ "sha1 0.11.0",
+ "sha2 0.11.0",
+ "sqlx",
+ "strum",
+ "sysinfo",
+ "thiserror 2.0.21",
+ "tokio",
+ "tokio-stream",
+ "tokio-util",
+ "toml",
+ "tracing",
+ "tracing-futures",
+ "tracing-subscriber",
+ "trash",
+ "url",
+ "uuid 1.26.1",
+]
+
+[[package]]
+name = "scclient_db"
+version = "2.12.1"
+dependencies = [
+ "async-tempfile",
+ "chrono",
+ "dunce",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "thiserror 2.0.21",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
+name = "scclient_discord"
+version = "2.12.1"
+dependencies = [
+ "chrono",
+ "discord-rich-presence",
+ "scclient_common",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "scclient_events"
+version = "2.12.1"
+dependencies = [
+ "thiserror 2.0.21",
+ "tokio",
+ "tracing",
+ "uuid 1.26.1",
+]
+
+[[package]]
+name = "scclient_java"
+version = "2.12.1"
+dependencies = [
+ "astral-tokio-tar",
+ "async-tempfile",
+ "async-trait",
+ "async_zip",
+ "futures-lite",
+ "futures-util",
+ "libc",
+ "reqwest 0.13.5",
+ "scclient_common",
+ "scclient_events",
+ "scclient_net",
+ "scio",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.21",
+ "tokio",
+ "tracing",
+ "url",
+ "windows-sys 0.61.2",
+]
+
+[[package]]
+name = "scclient_macro"
+version = "2.12.1"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 3.0.6",
+]
+
+[[package]]
+name = "scclient_mc"
+version = "2.12.1"
+dependencies = [
+ "base64 0.23.1",
+ "chrono",
+ "futures-util",
+ "interfrost",
+ "reqwest 0.13.5",
+ "scclient_common",
+ "scclient_events",
+ "scclient_net",
+ "scio",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.21",
+ "tokio",
+ "tracing",
+ "url",
+ "uuid 1.26.1",
+]
+
+[[package]]
+name = "scclient_net"
+version = "2.12.1"
+dependencies = [
+ "arc-swap",
+ "async-trait",
+ "bytes 1.12.1",
+ "futures-lite",
+ "futures-util",
+ "reqwest 0.13.5",
+ "scclient_common",
+ "scclient_events",
+ "scio",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.21",
+ "tokio",
+ "tracing",
+ "url",
+ "uuid 1.26.1",
+]
+
+[[package]]
+name = "scclient_scplus"
+version = "2.12.1"
+dependencies = [
+ "async-tungstenite 0.35.0",
+ "bytes 1.12.1",
+ "chrono",
+ "futures-util",
+ "image",
+ "rand 0.10.3",
+ "reqwest 0.13.5",
+ "reqwest-websocket",
+ "scclient_auth",
+ "scclient_common",
+ "scclient_events",
+ "scclient_net",
+ "scio",
+ "serde",
+ "serde_json",
+ "sha1 0.11.0",
+ "thiserror 2.0.21",
+ "tokio",
+ "tokio-util",
+ "tracing",
+ "url",
+ "uuid 1.26.1",
+]
+
+[[package]]
 name = "schannel"
 version = "0.1.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "91c1b7e4904c873ef0710c1f407dde2e6287de2bebc1bbbf7d430bb7cbffd939"
 dependencies = [
+ "windows-sys 0.61.2",
+]
+
+[[package]]
+name = "scio"
+version = "2.12.1"
+dependencies = [
+ "astral-tokio-tar",
+ "async-compression",
+ "async-tempfile",
+ "async_zip",
+ "bytes 1.12.1",
+ "digest 0.11.3",
+ "dunce",
+ "futures-lite",
+ "futures-util",
+ "junction",
+ "sanitize-filename",
+ "serde",
+ "serde_json",
+ "sha1 0.11.0",
+ "sha2 0.11.0",
+ "thiserror 2.0.21",
+ "tokio",
+ "tokio-util",
+ "tracing",
  "windows-sys 0.61.2",
 ]
 

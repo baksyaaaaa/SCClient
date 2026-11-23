@@ -26,7 +26,7 @@ jobs:
         run: |
           latest=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" \
             "https://api.github.com/repos/baksyaaaaa/SCClient/releases?per_page=30" \
-            | jq -r '[.[] | select((.tag_name | startswith("csclient-")) and (.prerelease | not) and (.draft | not))][0].tag_name | ltrimstr("csclient-")')
+            | jq -r '[.[] | select((.tag_name | startswith("scclient-")) and (.prerelease | not) and (.draft | not))][0].tag_name | ltrimstr("scclient-")')
           current=$(sed -n 's/^  version = "\(.*\)";$/\1/p' nix/package.nix | head -1)
           echo "latest=${latest} current=${current}"
 
@@ -35,9 +35,9 @@ jobs:
             exit 0
           fi
 
-          url="https://github.com/baksyaaaaa/SCClient/releases/download/csclient-${latest}/CSClient_${latest}_linux_x86_64.AppImage"
-          curl -fsSL -o /tmp/csclient.AppImage "$url"
-          hash="sha256-$(openssl dgst -sha256 -binary /tmp/csclient.AppImage | base64 -w0)"
+          url="https://github.com/baksyaaaaa/SCClient/releases/download/scclient-${latest}/SCClient_${latest}_linux_x86_64.AppImage"
+          curl -fsSL -o /tmp/scclient.AppImage "$url"
+          hash="sha256-$(openssl dgst -sha256 -binary /tmp/scclient.AppImage | base64 -w0)"
 
           sed -i \
             -e "s|^  version = \".*\";|  version = \"${latest}\";|" \
@@ -48,13 +48,13 @@ jobs:
 
       - name: Build the new version
         if: steps.update.outputs.changed == 'true'
-        run: nix build .#csclient --print-build-logs
+        run: nix build .#scclient --print-build-logs
 
       - name: Commit and push
         if: steps.update.outputs.changed == 'true'
         run: |
-          version=$(nix eval --raw .#csclient.version)
+          version=$(nix eval --raw .#scclient.version)
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -am "csclient: update to ${version}"
+          git commit -am "scclient: update to ${version}"
           git push

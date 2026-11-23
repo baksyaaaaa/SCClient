@@ -4,9 +4,9 @@ base_path: .
 preserve_hierarchy: true
 
 files:
-  - source: /packages/csclient_app/lang/en_us.json
-    dest: /csclient.json
-    translation: /translations/%locale_with_underscore%/csclient.json
+  - source: /packages/scclient_app/lang/en_us.json
+    dest: /scclient.json
+    translation: /translations/%locale_with_underscore%/scclient.json
     update_option: update_as_unapproved
     languages_mapping:
       locale_with_underscore:

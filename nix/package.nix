@@ -6,11 +6,11 @@
 }:
 
 let
-  pname = "csclient";
+  pname = "scclient";
   version = "2.12.0";
 
   src = fetchurl {
-    url = "https://github.com/baksyaaaaa/SCClient/releases/download/csclient-${version}/CSClient_${version}_linux_x86_64.AppImage";
+    url = "https://github.com/baksyaaaaa/SCClient/releases/download/scclient-${version}/SCClient_${version}_linux_x86_64.AppImage";
     hash = "sha256-XNvFLNG2enLgjj7KSQAax+GFsnZXci/Chr2lOmbVz2M=";
   };
 
@@ -18,13 +18,13 @@ let
 
   desktopItem = makeDesktopItem {
     name = pname;
-    desktopName = "CSClient";
-    comment = "Minecraft launcher by CS";
+    desktopName = "SCClient";
+    comment = "Minecraft launcher by SC";
     exec = "${pname} %U";
     icon = pname;
     terminal = false;
     categories = [ "Game" ];
-    mimeTypes = [ "x-scheme-handler/csclient" ];
+    mimeTypes = [ "x-scheme-handler/scclient" ];
   };
 in
 appimageTools.wrapType2 {
@@ -61,7 +61,7 @@ appimageTools.wrapType2 {
   '';
 
   meta = {
-    description = "CSClient, Minecraft launcher by CS";
+    description = "SCClient, Minecraft launcher by SC";
     homepage = "https://github.com/baksyaaaaa/SCClient";
     sourceProvenance = [ lib.sourceTypes.binaryNativeCode ];
     platforms = [ "x86_64-linux" ];

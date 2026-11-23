@@ -1,4 +1,4 @@
-# Contributing to CSLauncher/CSClient
+# Contributing to SCLauncher/SCClient
 
 Welcome!
 
@@ -21,7 +21,7 @@ To familiarize yourself with the project, please read the [README]. Here are som
 
 #### Creating a New Issue
 
-If you come across an issue or have a feature request for CSLauncher/CSClient, please [search if a related issue has already been reported]. If no relevant issue exists, you can open a new issue using the appropriate [issue form].
+If you come across an issue or have a feature request for SCLauncher/SCClient, please [search if a related issue has already been reported]. If no relevant issue exists, you can open a new issue using the appropriate [issue form].
 
 #### Solving an Issue
 
@@ -38,8 +38,8 @@ is via [rustup].
 To make changes locally, follow these steps:
 
 1. Clone the repository: `git clone https://github.com/baksyaaaaa/SCClient`
-2. Navigate to the project directory: `cd CSLauncher`
-3. Configure your system environment for CSLauncher/CSClient development:
+2. Navigate to the project directory: `cd SCLauncher`
+3. Configure your system environment for SCLauncher/SCClient development:
    1. Install a Rust toolchain that supports edition 2024: `rustup toolchain install stable`
    2. Freya renders with [Skia]; on Linux you may also need system libraries such as a C
       compiler, `pkg-config`, and the usual GUI/graphics dev packages. See the
@@ -47,10 +47,10 @@ To make changes locally, follow these steps:
 
 ### Running
 
-The app crate is `csclient_app`:
+The app crate is `scclient_app`:
 
-- `cargo run -p csclient_app` - Runs the **CSClient** desktop application.
-- `cargo build --release -p csclient_app` - Builds an optimized release binary.
+- `cargo run -p scclient_app` - Runs the **SCClient** desktop application.
+- `cargo build --release -p scclient_app` - Builds an optimized release binary.
 
 After you finish making your changes and committed them to your branch, run
 `cargo fmt` and `cargo clippy` to fix style inconsistencies and catch lints.
@@ -58,13 +58,13 @@ After you finish making your changes and committed them to your branch, run
 ### Packaging
 
 Installers are built with [cargo-packager] (config in
-`packages/csclient_app/Cargo.toml` under `[package.metadata.packager]`):
+`packages/scclient_app/Cargo.toml` under `[package.metadata.packager]`):
 
 - `cargo install cargo-packager --locked`
-- `cargo build --release -p csclient_app`
-- `cargo packager --release -p csclient_app --formats <nsis|app,dmg|deb,appimage>`
+- `cargo build --release -p scclient_app`
+- `cargo packager --release -p scclient_app --formats <nsis|app,dmg|deb,appimage>`
 
-Releases are cut by dispatching the `CSClient Release Build` GitHub Actions
+Releases are cut by dispatching the `SCClient Release Build` GitHub Actions
 workflow. See the **Packaging / Releasing** section of the [README] for details
 and per-OS prerequisites.
 
@@ -91,7 +91,7 @@ Once you have finished making your changes, create a pull request (PR) to submit
 
 ### Your PR is Merged!
 
-Congratulations! 🎉🎉 CS thanks you for your contribution! ✨
+Congratulations! 🎉🎉 SC thanks you for your contribution! ✨
 Once your PR is merged, your changes will be included in the next release.
 
 ### Common Errors

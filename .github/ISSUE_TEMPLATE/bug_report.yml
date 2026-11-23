@@ -1,5 +1,5 @@
 name: Bug report
-description: Create a report to help us improve CS. Include screenshots if possible.
+description: Create a report to help us improve SC. Include screenshots if possible.
 labels: [bug]
 body:
   - type: markdown
@@ -18,8 +18,8 @@ body:
       multiple: true
       options:
         - Core
-        - CSClient
-        - CSLauncher
+        - SCClient
+        - SCLauncher
   - type: textarea
     attributes:
       label: Describe the bug

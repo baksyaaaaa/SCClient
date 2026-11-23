@@ -18,11 +18,11 @@
 ### Features
 
 - Add Oracle GraalVM as a Java runtime option by [Wyvest](https://github.com/Wyvest)
-- Configure settings with `CSCLIENT_SETTING_*` environment variables by [LynithDev](https://github.com/LynithDev)
+- Configure settings with `SCCLIENT_SETTING_*` environment variables by [LynithDev](https://github.com/LynithDev)
 - Redesigned the auto-scroll button in live log viewers by [LynithDev](https://github.com/LynithDev)
 - Show previews for supported videos in mod descriptions. by [wSmoothie](https://github.com/wSmoothie)
 - Added a toggle to switch bundles between the stable and nightly channels by [LynithDev](https://github.com/LynithDev)
-- Add a Nix flake to package CSClient for NixOS by [Yuna404](https://github.com/Yuna404)
+- Add a Nix flake to package SCClient for NixOS by [Yuna404](https://github.com/Yuna404)
 - Redesigned the Appearance picker in onboarding and settings with separate Style and Theme choices, live style previews, custom themes with dark and light variants, theme import and a parallax preview by [wSmoothie](https://github.com/wSmoothie)
 - Warn when the launcher folder is inside OneDrive by [LynithDev](https://github.com/LynithDev)
 - Reordered wardrobe elements and added zoom to the cosmetic preview by [LynithDev](https://github.com/LynithDev)
@@ -68,8 +68,8 @@
 - Brought back colors on mod cards in cluster view by [rozwader](https://github.com/rozwader)
 - Fixed an empty fabric_loader_dependencies.json stopping Fabric from starting by [LynithDev](https://github.com/LynithDev)
 - Sped up mod downloads on slow or unstable connections by giving each file its own connection and splitting large files into parallel parts by [Wyvest](https://github.com/Wyvest)
-- Added improve by csclient option for modpacks imported from a file by [rozwader](https://github.com/rozwader)
-- The launcher log now starts with the CSClient version by [junapur](https://github.com/junapur)
+- Added improve by scclient option for modpacks imported from a file by [rozwader](https://github.com/rozwader)
+- The launcher log now starts with the SCClient version by [junapur](https://github.com/junapur)
 - Added ability to edit options.txt in launcher by [rozwader](https://github.com/rozwader)
 - Added options (mods, textures and shaders) while exporting a cluster by [rozwader](https://github.com/rozwader)
 - On 1.8.9, a bundled mod now takes over from an older copy you installed yourself by [saadndm](https://github.com/saadndm)
@@ -163,13 +163,13 @@
 - Added new cluster picker instead of dropdowns by [rozwader](https://github.com/rozwader)
 - Removed radio buttons from category rows in new instance creator
 - Setup now has an Appearance step where you can pick a theme, and theme cards show their names by [LynithDev](https://github.com/LynithDev)
-- The setup screens show the CSClient logo icon next to the name again by [LynithDev](https://github.com/LynithDev)
+- The setup screens show the SCClient logo icon next to the name again by [LynithDev](https://github.com/LynithDev)
 - Cleared the window to opaque black instead of transparent by [LynithDev](https://github.com/LynithDev)
 - Added Ctrl+Shift+O (Cmd+Shift+O on macOS) to open the logs folder by [LynithDev](https://github.com/LynithDev)
 - Package names and icons show from the local cache right away instead of waiting on Modrinth and CurseForge by [LynithDev](https://github.com/LynithDev)
 - The Minecraft theme's Appearance icon is now a recognisable paintbrush by [LynithDev](https://github.com/LynithDev)
 - Minecraft-theme pixel icons stay crisp at fractional display scaling like 125% by [LynithDev](https://github.com/LynithDev)
-- Made csplus 'turn off' warning show only once, if a player still disables it
+- Made scplus 'turn off' warning show only once, if a player still disables it
 - Prerelease versions now sort below their release when checking dependency ranges by [Wyvest](https://github.com/Wyvest)
 - Added server and client side filters for mods in browser by [rozwader](https://github.com/rozwader)
 - Reset only the settings that fail to parse instead of the whole file by [LynithDev](https://github.com/LynithDev)
@@ -183,7 +183,7 @@
 - Instance sharing and cloud sync screens can be translated by [Deftu](https://github.com/Deftu)
 - Fixed mods published on CurseForge being flagged as unpublished when importing a modpack by [rozwader](https://github.com/rozwader)
 - Added version and loader info when exporting the clusters list of mods by [rozwader](https://github.com/rozwader)
-- Added version + loader info on home page for CSClient clusters by [rozwader](https://github.com/rozwader)
+- Added version + loader info on home page for SCClient clusters by [rozwader](https://github.com/rozwader)
 - Fixed wardrobe card border hidden behind the bottom button by [junapur](https://github.com/junapur)
 - Fixed the wardrobe crashing when switching between sections by [junapur](https://github.com/junapur)
 - Show a loading spinner on the wardrobe page and fade it in once loaded by [LynithDev](https://github.com/LynithDev)
@@ -198,14 +198,14 @@
 
 - Added themes by [ghost](https://github.com/ghost)
 - Dedicated-folder clusters now keep their own resource packs and shaders instead of sharing the global ones by [Wyvest](https://github.com/Wyvest)
-- Fabric Loader now auto updates on CSClient clusters and asks before updating custom and modpack clusters by [LynithDev](https://github.com/LynithDev)
+- Fabric Loader now auto updates on SCClient clusters and asks before updating custom and modpack clusters by [LynithDev](https://github.com/LynithDev)
 - Added a Flatpak bundle to every release by [LynithDev](https://github.com/LynithDev)
 - Added minecraft crash handling in launcher
-- Added an ability to export your CSClient clusters, compatible with other launchers too
+- Added an ability to export your SCClient clusters, compatible with other launchers too
 - Added syncing up dedicated clusters with shared directory data (settings, worlds, config etc.) by [rozwader](https://github.com/rozwader)
 - Added thanos mod for troubleshotting cluster mods (binary search)
-- Added the Wardrobe, where you can equip CS+ cosmetics, change your Minecraft cape, save outfits and skins, and buy cosmetics by [Deftu](https://github.com/Deftu)
-- The wardrobe preview shows CS+ cosmetics and plays emotes on a new 3D player renderer by [LynithDev](https://github.com/LynithDev)
+- Added the Wardrobe, where you can equip SC+ cosmetics, change your Minecraft cape, save outfits and skins, and buy cosmetics by [Deftu](https://github.com/Deftu)
+- The wardrobe preview shows SC+ cosmetics and plays emotes on a new 3D player renderer by [LynithDev](https://github.com/LynithDev)
 - The wardrobe lets you pick the particle color of your aura, and the 3D preview shows it by [LynithDev](https://github.com/LynithDev)
 
 - Clusters can import modpacks
@@ -227,10 +227,10 @@
 - Disabled ability to search CurseForge on Orinthe clusters (CurseForge doesn't provide Orinthe compatible mods) by [rozwader](https://github.com/rozwader)
 - Fixed mods auto enabling (after being disabled) when added from declined bundles (eg. skyblock bundle) by [rozwader](https://github.com/rozwader)
 - Switching an instance to a dedicated folder offers to bring its shared worlds and settings along by [tunaseckin](https://github.com/tunaseckin)
-- Added option to choose from dedicated and shared dir while creating CSClient cluster instance by [rozwader](https://github.com/rozwader)
+- Added option to choose from dedicated and shared dir while creating SCClient cluster instance by [rozwader](https://github.com/rozwader)
 - Fixed a test that depended on JSON key order by [tunaseckin](https://github.com/tunaseckin)
 - Fixed too long names overflowing in the drag and drop window by [rozwader](https://github.com/rozwader)
-- Added `CSCLIENT_DISABLE_JAVA_AUTOINSTALL` and `CSCLIENT_LAUNCHER_EXE` environment overrides for packagers by [saadndm](https://github.com/saadndm)
+- Added `SCCLIENT_DISABLE_JAVA_AUTOINSTALL` and `SCCLIENT_LAUNCHER_EXE` environment overrides for packagers by [saadndm](https://github.com/saadndm)
 - Added ability to export clusters list of mods to clipboard
 - Fixed filters resetting when you change a tab in cluster view by [rozwader](https://github.com/rozwader)
 - Stopping a game from the launcher lets it save and close before forcing it to quit on macOS and Linux by [tunaseckin](https://github.com/tunaseckin)
@@ -239,8 +239,8 @@
 - Fixed resource packs and shaders edited in the file explorer being overwritten with the original on launch by [Wyvest](https://github.com/Wyvest)
 - Fixed opening folders and links in external programs on Linux by [LynithDev](https://github.com/LynithDev)
 - Added ctrl + f shortcut for focusing the searchbar in logs and live log views by [rozwader](https://github.com/rozwader)
-- Fixed sort by not applying to CSClient versions in the instance list by [rozwader](https://github.com/rozwader)
-- Added open link button for new CSClient version toasts by [rozwader](https://github.com/rozwader)
+- Fixed sort by not applying to SCClient versions in the instance list by [rozwader](https://github.com/rozwader)
+- Added open link button for new SCClient version toasts by [rozwader](https://github.com/rozwader)
 - Added a button for opening logs from launcher by [rozwader](https://github.com/rozwader)
 - Added a dropdown for opengl/vulkan graphic backend in cluster with version 26.2 and above by [rozwader](https://github.com/rozwader)
 - Added a Select button to the content list for enabling, disabling or deleting several items at once by [Wyvest](https://github.com/Wyvest)

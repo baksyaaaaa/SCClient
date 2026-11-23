@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.sc.SCClient</id>
+  <name>SCClient</name>
+  <summary>Next-generation open source Minecraft launcher</summary>
+  <developer id="org.cs">
+    <name>SC Inc.</name>
+  </developer>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  <description>
+    <p>SCClient is a next-generation open source Minecraft launcher by SC.</p>
+  </description>
+  <launchable type="desktop-id">org.sc.SCClient.desktop</launchable>
+  <url type="homepage">https://polyfrost.org/projects/oneclient</url>
+  <url type="bugtracker">https://github.com/baksyaaaaa/SCClient/issues</url>
+  <url type="vcs-browser">https://github.com/baksyaaaaa/SCClient</url>
+  <content_rating type="oars-1.1"/>
+  <provides>
+    <binary>scclient_app</binary>
+  </provides>
+</component>

@@ -3,9 +3,9 @@ contact_links:
   - name: Discord
     about: Ask questions or share feature requests on our Discord Server.
     url: https://polyfrost.org/discord
-  - name: CS Documentation
-    about: Useful documentation about CS, OneConfig, and other CS projects.
+  - name: SC Documentation
+    about: Useful documentation about SC, OneConfig, and other SC projects.
     url: https://docs.polyfrost.org
-  - name: CS Docs^2
-    about: Useful documentation about how you can contribute to CS projects.
+  - name: SC Docs^2
+    about: Useful documentation about how you can contribute to SC projects.
     url: https://contributing.polyfrost.org

@@ -1,5 +1,5 @@
 {
-  description = "CSClient (CS CSLauncher) pour NixOS";
+  description = "SCClient (SC SCLauncher) pour NixOS";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
@@ -11,21 +11,21 @@
         config.allowUnfree = true;
       };
 
-      csclient = pkgs.callPackage ./nix/package.nix { };
+      scclient = pkgs.callPackage ./nix/package.nix { };
     in
     {
       packages.${system} = {
-        inherit csclient;
-        default = csclient;
+        inherit scclient;
+        default = scclient;
       };
 
       apps.${system}.default = {
         type = "app";
-        program = "${csclient}/bin/csclient";
+        program = "${scclient}/bin/scclient";
       };
 
       overlays.default = final: prev: {
-        csclient = final.callPackage ./nix/package.nix { };
+        scclient = final.callPackage ./nix/package.nix { };
       };
     };
 }
