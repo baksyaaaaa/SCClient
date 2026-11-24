@@ -11,7 +11,7 @@ SCClient is a Minecraft client featuring fully 100% open-source components, offe
 
 ## Installing
 
-You can install the latest release of SCClient from our website: [https://polyfrost.org/projects/oneclient](https://polyfrost.org/projects/oneclient)
+Download the latest Windows build: [SC-Client-Setup.exe](https://github.com/baksyaaaaa/SCClient/releases/latest/download/SC-Client-Setup.exe)
 as well as our [GitHub releases](https://github.com/baksyaaaaa/SCClient/releases/latest).
 
 | Windows (x86_64) | macOS (Intel & Apple Silicon) | Linux (x86_64)                                          |
@@ -105,4 +105,5 @@ and uses the new entry as the GitHub release body, which is what the launcher's 
 
 ## Code signing
 
-This program uses free code signing provided by [SignPath.io](https://signpath.io?utm_source=foundation&utm_medium=github&utm_campaign=0install), and a certificate by the [SignPath Foundation](https://signpath.org?utm_source=foundation&utm_medium=github&utm_campaign=0install). We thank them very much to their contributions to OSS software!
+
+<sub>Based on OneClient by Polyfrost, licensed under GPL-3.0.</sub>

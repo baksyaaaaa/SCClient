@@ -1,6 +1,6 @@
 ## SC Client Terms of Service
 
-SC Client is a free, unofficial Minecraft: Java Edition launcher. It is not made by, approved by or connected to Mojang, Microsoft or Polyfrost. It is based on OneClient by Polyfrost, used under the GPL-3.0 license.
+SC Client is a free, unofficial Minecraft: Java Edition launcher. It is not made by, approved by or connected to Mojang, Microsoft or Polyfrost.
 
 **Using SC Client**
 - You need your own copy of Minecraft: Java Edition, and you have to follow the Minecraft EULA and Microsoft's terms.
