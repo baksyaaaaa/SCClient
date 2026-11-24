@@ -44,7 +44,7 @@ impl Component for OnboardingLanguage {
             .width(Size::fill())
             .spacing(16.)
             .child(step_heading(
-                "SCClient",
+                "SC Client",
                 t("scclient.onboarding.welcome.subtitle"),
             ))
             .child(

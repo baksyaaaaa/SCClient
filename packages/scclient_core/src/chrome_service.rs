@@ -216,6 +216,9 @@ pub struct Friend {
     /// the SC Client team chat (one message every 14 days)
     #[serde(default)]
     pub team: bool,
+    /// in the SC Client chat: this player can send one message every 14 days (the team can't be limited)
+    #[serde(default)]
+    pub limited: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]

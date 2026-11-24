@@ -17,6 +17,7 @@ struct Open {
     name: String,
     faces: Vec<String>,
     team: bool,
+    limited: bool,
 }
 
 #[derive(PartialEq)]
@@ -113,18 +114,21 @@ impl Component for Friends {
         // ----- left column: add, requests, friends
         let mut left = rect()
             .vertical()
+            .content(Content::Flex)
             .width(Size::px(320.))
             .height(Size::fill())
             .spacing(14.)
             .child(
                 rect()
                     .horizontal()
+                    .content(Content::Flex)
+                    .width(Size::fill())
                     .spacing(8.)
                     .cross_align(Alignment::Center)
                     .child(TextInput::new(add_name).placeholder("Add a friend by username").width(Size::flex(1.0)).on_submit(
                         move |_| add(()),
                     ))
-                    .child(Button::new().primary().text("Add").on_press(move |_| add(()))),
+                    .child(Button::new().primary().width(Size::px(68.)).text("Add").on_press(move |_| add(()))),
             );
 
         if let Some(s) = &snapshot {
@@ -166,7 +170,7 @@ impl Component for Friends {
             let mut list = rect().vertical().spacing(4.).width(Size::fill());
             for f in &s.friends {
                 let face_ids = if f.faces.is_empty() { vec![f.uuid.clone()] } else { f.faces.clone() };
-                let pick = Open { uuid: f.uuid.clone(), name: f.name.clone(), faces: face_ids.clone(), team: f.team };
+                let pick = Open { uuid: f.uuid.clone(), name: f.name.clone(), faces: face_ids.clone(), team: f.team, limited: f.limited };
                 let selected = current.as_ref().is_some_and(|o| o.uuid == f.uuid);
                 let text = if f.unread > 0 { format!("{}  ({} new)", f.name, f.unread) } else { f.name.clone() };
                 let button = Button::new()
@@ -174,6 +178,7 @@ impl Component for Friends {
                     .child(
                         rect()
                             .horizontal()
+                            .width(Size::fill())
                             .spacing(10.)
                             .cross_align(Alignment::Center)
                             .child(faces_row(&face_ids, 24.))
@@ -218,6 +223,7 @@ impl Component for Friends {
                 }
                 rect()
                     .vertical()
+                    .content(Content::Flex)
                     .width(Size::flex(1.0))
                     .height(Size::fill())
                     .spacing(10.)
@@ -227,10 +233,10 @@ impl Component for Friends {
                     .child(
                         rect()
                             .horizontal()
+                            .content(Content::Flex)
                             .width(Size::fill())
                             .cross_align(Alignment::Center)
                             .spacing(10.)
-                            .child(faces_row(&who.faces, 32.))
                             .child(
                                 label()
                                     .text(who.name.clone())
@@ -247,15 +253,20 @@ impl Component for Friends {
                                 })
                             })),
                     )
-                    .child(ScrollArea::new().width(Size::fill()).height(Size::flex(1.0)).child(msgs))
-                    .maybe_child(who.team.then(|| muted("You can send one message here every 14 days, so make it count.")))
+                    .child(
+                        ScrollArea::new().width(Size::fill()).height(Size::flex(1.0)).child(msgs),
+                    )
+                    .maybe_child(who.limited.then(|| muted("You can send one message here every 14 days, so make it count.")))
+                    .maybe_child((who.team && !who.limited).then(|| muted("Start with @name to answer one player. Anything else goes to every player.")))
                     .child(
                         rect()
                             .horizontal()
+                            .content(Content::Flex)
+                            .width(Size::fill())
                             .spacing(8.)
                             .cross_align(Alignment::Center)
                             .child(TextInput::new(draft).placeholder("Message").width(Size::flex(1.0)).on_submit(move |_| send(())))
-                            .child(Button::new().primary().text("Send").on_press(move |_| send(()))),
+                            .child(Button::new().primary().width(Size::px(80.)).text("Send").on_press(move |_| send(()))),
                     )
                     .into_element()
             }
@@ -263,6 +274,7 @@ impl Component for Friends {
 
         rect()
             .vertical()
+            .content(Content::Flex)
             .width(Size::fill())
             .height(Size::fill())
             .padding(Gaps::new(0., 40., 32., 40.))
@@ -283,6 +295,7 @@ impl Component for Friends {
             .child(
                 rect()
                     .horizontal()
+                    .content(Content::Flex)
                     .width(Size::fill())
                     .height(Size::flex(1.0))
                     .spacing(20.)
@@ -349,6 +362,7 @@ fn muted(text: &str) -> Element {
 fn person_row(name: &str, color: Color) -> Rect {
     rect()
         .horizontal()
+        .content(Content::Flex)
         .width(Size::fill())
         .spacing(6.)
         .cross_align(Alignment::Center)
@@ -359,7 +373,13 @@ fn person_row(name: &str, color: Color) -> Rect {
 fn faces_row(uuids: &[String], size: f32) -> Element {
     let mut row = rect().horizontal().spacing(2.).cross_align(Alignment::Center);
     for uuid in uuids.iter().take(3) {
-        row = row.child(Avatar::new(uuid.clone()).size(size).radius(size / 4.));
+        row = row.child(
+            rect()
+                .width(Size::px(size))
+                .height(Size::px(size))
+                .overflow(Overflow::Clip)
+                .child(Avatar::new(uuid.clone()).size(size).radius(size / 4.)),
+        );
     }
     row.into_element()
 }

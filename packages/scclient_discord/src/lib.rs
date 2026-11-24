@@ -169,7 +169,7 @@ impl Worker {
             .assets(
                 Assets::new()
                     .large_image(LARGE_IMAGE)
-                    .large_text("SCClient"),
+                    .large_text("SC Client"),
             )
             .buttons(vec![Button::new("Website", "https://polyfrost.org/")]);
 
