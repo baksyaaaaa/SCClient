@@ -44,10 +44,9 @@ pub fn chat_allowed(
     settings: &scclient_core::settings::LauncherSettings,
     consent_declined: bool,
 ) -> bool {
-    !consent_declined
-        && !settings.declined_tos
-        && settings.accepted_tos_version > 0
-        && settings.accepted_privacy_version > 0
+    // Polyfrost's chat and parties are off in SC Client; the Friends page (Chrome Client service) replaces them
+    let _ = (settings, consent_declined);
+    false
 }
 
 #[derive(Clone, Debug, Default, PartialEq)]
@@ -1323,8 +1322,8 @@ mod tests {
     }
 
     #[test]
-    fn chat_needs_both_documents_accepted() {
-        assert!(chat_allowed(&settings(1, 1, false), false));
+    fn polyfrost_chat_stays_off() {
+        assert!(!chat_allowed(&settings(1, 1, false), false));
         assert!(!chat_allowed(&settings(0, 0, false), false));
         assert!(!chat_allowed(&settings(1, 0, false), false));
         assert!(!chat_allowed(&settings(0, 1, false), false));

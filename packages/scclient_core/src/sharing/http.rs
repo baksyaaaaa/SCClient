@@ -244,7 +244,8 @@ fn sharing_error(err: Remote, code: Option<&ShareCode>, size: u64) -> SharingErr
     match err {
         Remote::Uncommitted(_, err) => sharing_error(*err, code, size),
         Remote::Plus(PlusError::ConsentRequired) => SharingError::Unavailable(
-            "sharing needs the Terms of Service and Privacy Policy accepted in settings".into(),
+            "online share codes are off in SC Client - use Export to save the instance as a file and send that instead"
+                .into(),
         ),
         Remote::Plus(err) => SharingError::Unavailable(err.to_string()),
         Remote::Invalid(message) => SharingError::Unavailable(message),

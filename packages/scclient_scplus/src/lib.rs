@@ -175,7 +175,7 @@ pub fn start(auth: Arc<scclient_auth::AuthService>, events: EventBus) -> Arc<Plu
 
     if !STARTED.swap(true, Ordering::SeqCst) {
         if plus_blocked() {
-            tracing::info!("[plus] session stays off: terms and privacy policy declined");
+            tracing::info!("[plus] off in SC Client: friends and cosmetics use the Chrome Client service");
         } else {
             session::spawn(Arc::clone(client));
         }
@@ -222,8 +222,16 @@ pub fn social_allowed() -> bool {
     SOCIAL_ALLOWED.load(Ordering::SeqCst)
 }
 
+/// SC Client never talks to Polyfrost's Plus service (online status, parties, chat, wardrobe, share codes):
+/// cosmetics and friends go through the Chrome Client service instead (`scclient_core::chrome_service`).
+/// Everything that uses Plus already handles "blocked" (it is the declined-terms path), so it simply stays off.
 pub fn plus_blocked() -> bool {
-    scclient_common::consent::blocks_url(&base_url())
+    // only a local test server (the launcher's own tests) is ever let through
+    let local = url::Url::parse(&base_url())
+        .ok()
+        .and_then(|u| u.host_str().map(|h| matches!(h, "127.0.0.1" | "localhost" | "[::1]")))
+        .unwrap_or(false);
+    !local
 }
 
 pub fn set_base_url(url: &str) {
