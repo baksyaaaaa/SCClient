@@ -65,10 +65,18 @@ struct Asset {
 
 /// Makes sure `cluster_id` runs ChromePoly + Chrome Client instead of Polyfrost's PolyPlus.
 /// Never fails a launch: anything that goes wrong is logged and the game starts as it was.
-pub(crate) async fn apply(state: &Arc<LauncherState>, cluster_id: i64, loader: GameLoader, mc: &str) {
+pub(crate) async fn apply(
+    state: &Arc<LauncherState>,
+    cluster_id: i64,
+    loader: GameLoader,
+    mc: &str,
+    game_dir: &std::path::Path,
+) {
     if !matches!(loader, GameLoader::Fabric) {
         return;
     }
+    // the wardrobe picks go to the game (or the game's newer picks come back)
+    crate::chrome_service::sync_to_game(game_dir).await;
     let poly = POLY_VERSIONS.contains(&mc);
     let build = mod_build(mc);
     if !poly && build.is_none() {
@@ -82,6 +90,14 @@ pub(crate) async fn apply(state: &Arc<LauncherState>, cluster_id: i64, loader: G
             return;
         }
     };
+    // SC logo and name in the menu mod (done once per downloaded jar; a branded jar is skipped)
+    for jar in jars.iter().filter(|j| name_of(j).starts_with(POLY_PREFIX)) {
+        match crate::game::scbrand::brand_jar(jar).await {
+            Ok(true) => tracing::info!(jar = %jar.display(), "put the SC branding in the menu mod"),
+            Ok(false) => {}
+            Err(err) => tracing::warn!(jar = %jar.display(), error = %err, "could not brand the menu mod"),
+        }
+    }
     if let Err(err) = link(state, cluster_id, &jars).await {
         tracing::warn!(cluster_id, error = %err, "could not set up Chrome Client");
     }

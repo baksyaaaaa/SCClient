@@ -147,7 +147,7 @@ impl VersionsManager {
     ) -> LauncherResult<Option<(T, bool)>> {
         let path = paths::caches_dir()?.join(file_name);
         let url = format!(
-            "{}/scclient/versions/{remote_name}",
+            "{}/oneclient/versions/{remote_name}",
             services.requester.config().meta_url_base
         );
 

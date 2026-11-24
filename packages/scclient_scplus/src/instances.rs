@@ -17,7 +17,7 @@ pub const COMMIT_TIMEOUT: Duration = Duration::from_secs(5 * 60);
 const COMMIT_ATTEMPTS: u32 = 4;
 const MAX_RETRY_WAIT: Duration = Duration::from_secs(60);
 
-pub const INSTANCES_PATH: &str = "/v1/scclient/shares";
+pub const INSTANCES_PATH: &str = "/v1/oneclient/shares";
 
 #[derive(Debug, Clone)]
 pub struct Reply {

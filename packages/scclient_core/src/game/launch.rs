@@ -253,6 +253,7 @@ async fn start(
         cluster_id,
         cluster.mc_loader,
         &scclient_common::version::normalize_mc_version_input(&cluster.mc_version),
+        &game_dir,
     )
     .await;
 

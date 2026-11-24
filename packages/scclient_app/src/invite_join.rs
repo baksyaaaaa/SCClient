@@ -7,7 +7,7 @@ use crate::essential::SCPLUS;
 
 #[must_use]
 pub fn join_jvm_arg(invite_id: i32) -> String {
-    format!("-Dcsplus.joinInvite={invite_id}")
+    format!("-Dpolyplus.joinInvite={invite_id}")
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -293,6 +293,6 @@ mod tests {
 
     #[test]
     fn the_join_argument_carries_the_invite() {
-        assert_eq!(join_jvm_arg(38), "-Dcsplus.joinInvite=38");
+        assert_eq!(join_jvm_arg(38), "-Dpolyplus.joinInvite=38");
     }
 }

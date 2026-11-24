@@ -51,6 +51,11 @@ pub fn init(enabled: bool) -> Option<ClientInitGuard> {
         return None;
     }
 
+    if SENTRY_DSN.is_empty() {
+        tracing::debug!("crash reporting off: no Sentry DSN of SC Client's own");
+        return None;
+    }
+
     if cfg!(debug_assertions) && option_env!("SCCLIENT_SENTRY_DSN").is_none() {
         tracing::debug!("crash reporting skipped: debug build without an explicit DSN");
         return None;

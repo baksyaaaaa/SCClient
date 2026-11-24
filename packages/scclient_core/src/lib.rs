@@ -5,6 +5,7 @@ pub mod dev;
 
 pub mod bisect;
 pub mod changelog;
+pub mod chrome_service;
 pub mod clusters;
 pub mod disable_warnings;
 mod error;

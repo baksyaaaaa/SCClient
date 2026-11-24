@@ -1,7 +1,7 @@
 use freya::prelude::*;
 
-use crate::components::{Icon, IconType, window_controls};
-use crate::theme::{self, colors};
+use crate::components::window_controls;
+use crate::theme;
 
 #[derive(PartialEq)]
 pub struct OnboardingNavbar;
@@ -38,10 +38,5 @@ fn logo() -> impl IntoElement {
         .horizontal()
         .cross_align(Alignment::Center)
         .spacing(18.)
-        .child(
-            Icon::new(IconType::IconLogo)
-                .size(32.)
-                .color(colors::fg_primary()),
-        )
-        .child(theme::wordmark(170., 36., colors::fg_primary()))
+        .child(theme::logo_image(40.))
 }

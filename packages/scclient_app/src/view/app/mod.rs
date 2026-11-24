@@ -2,7 +2,11 @@ mod analytics;
 mod clusters;
 mod debug;
 mod home;
+mod chrome_wardrobe;
+mod friends;
 mod stats;
+// the old Polyfrost (SC+) wardrobe: no longer shown, the Chrome Client wardrobe replaced it
+#[allow(dead_code, unused_imports)]
 mod wardrobe;
 
 pub mod browser;
@@ -78,4 +82,5 @@ pub(crate) use clusters::{
 pub use debug::Debug;
 pub use home::Home;
 pub use stats::Stats;
-pub use wardrobe::Wardrobe;
+pub use chrome_wardrobe::ChromeWardrobe as Wardrobe;
+pub use friends::Friends;

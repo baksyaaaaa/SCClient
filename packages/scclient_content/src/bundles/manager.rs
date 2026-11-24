@@ -366,7 +366,7 @@ impl BundlesManager {
         // One cache file for both channels: a switch sends the other channel's
         // ETag, misses, and resyncs the catalog onto the new channel's paths
         let url = format!(
-            "{}/scclient/bundles/{channel}/metadata.json",
+            "{}/oneclient/bundles/{channel}/metadata.json",
             config.meta_url_base
         );
 

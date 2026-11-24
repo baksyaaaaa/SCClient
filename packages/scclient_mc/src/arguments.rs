@@ -446,7 +446,7 @@ fn parse_java_argument(
             &scio::canonicalize(libraries_path)?.display().to_string(),
         )
         .replace("${classpath_separator}", constants::CLASSPATH_SEPARATOR)
-        .replace("${launcher_name}", "SCClient")
+        .replace("${launcher_name}", "OneClient") // ChromePoly/PolyPlus recognise the launcher by this brand
         .replace("${launcher_version}", env!("CARGO_PKG_VERSION"))
         .replace("${version_name}", version)
         .replace("${classpath}", classpaths))

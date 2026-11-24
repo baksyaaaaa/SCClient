@@ -214,7 +214,7 @@ pub(super) async fn fetch_flag_list<T: DeserializeOwned>(
     file_name: &str,
     ctx: &ContentCtx,
 ) -> ContentResult<T> {
-    let url = format!("{}/scclient/{file_name}", ctx.net.config().meta_url_base);
+    let url = format!("{}/oneclient/{file_name}", ctx.net.config().meta_url_base);
     let cache_path = paths::caches_dir()?.join(file_name);
 
     let Some(fetched) = fetch_cached(&ctx.net, &url, &cache_path, EtagPolicy::CommitNow).await?
@@ -255,7 +255,7 @@ pub async fn load_bad_mods(ctx: &ContentCtx) -> Arc<BadModList> {
 #[tracing::instrument(level = "debug", skip(ctx))]
 pub async fn fetch_improvements(ctx: &ContentCtx) -> ContentResult<BadModList> {
     let url = format!(
-        "{}/scclient/improvements.json",
+        "{}/oneclient/improvements.json",
         ctx.net.config().meta_url_base
     );
     let cache_path = paths::caches_dir()?.join("improvements.json");
@@ -270,7 +270,7 @@ pub async fn fetch_improvements(ctx: &ContentCtx) -> ContentResult<BadModList> {
     Ok(fetched.json::<ImprovementList>()?.into())
 }
 
-const EXPLANATIONS_DIR: &str = "/scclient/bad_mods_mds/";
+const EXPLANATIONS_DIR: &str = "/oneclient/bad_mods_mds/";
 
 fn explanation_file_name(path: &str) -> Option<&str> {
     md_file_name(EXPLANATIONS_DIR, path)
@@ -722,12 +722,12 @@ mod tests {
 
     #[test]
     fn parses_explanation_path() {
-        let raw = br#"{"bad-mods":[{"hash":"aaa","explanation":"/scclient/bad_mods_mds/test-file.md"},{"hash":"bbb","explanation":"  "}]}"#;
+        let raw = br#"{"bad-mods":[{"hash":"aaa","explanation":"/oneclient/bad_mods_mds/test-file.md"},{"hash":"bbb","explanation":"  "}]}"#;
         let list: BadModList = serde_json::from_slice(raw).unwrap();
 
         assert_eq!(
             list.bad_mods[0].explanation.as_deref(),
-            Some("/scclient/bad_mods_mds/test-file.md")
+            Some("/oneclient/bad_mods_mds/test-file.md")
         );
         assert_eq!(list.bad_mods[1].explanation, None);
     }
@@ -735,25 +735,25 @@ mod tests {
     #[test]
     fn explanation_must_be_an_md_file_in_the_folder() {
         assert_eq!(
-            explanation_file_name("/scclient/bad_mods_mds/test-file.md"),
+            explanation_file_name("/oneclient/bad_mods_mds/test-file.md"),
             Some("test-file.md")
         );
-        assert_eq!(explanation_file_name("/scclient/tos.json"), None);
+        assert_eq!(explanation_file_name("/oneclient/tos.json"), None);
         assert_eq!(
-            explanation_file_name("/scclient/bad_mods_mds/notes.txt"),
+            explanation_file_name("/oneclient/bad_mods_mds/notes.txt"),
             None
         );
-        assert_eq!(explanation_file_name("/scclient/bad_mods_mds/.md"), None);
+        assert_eq!(explanation_file_name("/oneclient/bad_mods_mds/.md"), None);
         assert_eq!(
-            explanation_file_name("/scclient/bad_mods_mds/../tos.md"),
-            None
-        );
-        assert_eq!(
-            explanation_file_name("/scclient/bad_mods_mds/sub/file.md"),
+            explanation_file_name("/oneclient/bad_mods_mds/../tos.md"),
             None
         );
         assert_eq!(
-            explanation_file_name("/scclient/bad_mods_mds/a.md?x=1"),
+            explanation_file_name("/oneclient/bad_mods_mds/sub/file.md"),
+            None
+        );
+        assert_eq!(
+            explanation_file_name("/oneclient/bad_mods_mds/a.md?x=1"),
             None
         );
         assert_eq!(
@@ -772,7 +772,7 @@ mod tests {
             "project-ids":{"modrinth":"geGZinIB","curseforge":"1570586"},
             "name":"Combat Hitboxes",
             "author":"sootysplash",
-            "explanation":"/scclient/bad_mods_mds/combat-hitboxes.md",
+            "explanation":"/oneclient/bad_mods_mds/combat-hitboxes.md",
             "alternatives":[{"project-ids":{"modrinth":"Mptc0jo6"}}]
         }]}"#;
         let list: BadModList = serde_json::from_slice::<ImprovementList>(raw)

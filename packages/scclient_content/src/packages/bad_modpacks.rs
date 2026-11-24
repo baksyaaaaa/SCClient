@@ -6,7 +6,7 @@ use super::bad_mods::{BadMod, BadModList, fetch_flag_list, fetch_md_file, lenien
 use crate::ctx::ContentCtx;
 use crate::error::ContentResult;
 
-const EXPLANATIONS_DIR: &str = "/scclient/bad_modpacks_mds/";
+const EXPLANATIONS_DIR: &str = "/oneclient/bad_modpacks_mds/";
 
 #[derive(Debug, Clone, Default, Deserialize)]
 struct BadModpackFile {
@@ -81,7 +81,7 @@ mod tests {
                 "project-ids": { "modrinth": "asdasd", "curseforge": 12345 },
                 "name": "Joe",
                 "author": "Doue",
-                "explanation": "/scclient/bad_modpacks_mds/test.md"
+                "explanation": "/oneclient/bad_modpacks_mds/test.md"
             }
         ]
     }"#;
@@ -101,7 +101,7 @@ mod tests {
         assert_eq!(entry.author.as_deref(), Some("Doue"));
         assert_eq!(
             entry.explanation.as_deref(),
-            Some("/scclient/bad_modpacks_mds/test.md")
+            Some("/oneclient/bad_modpacks_mds/test.md")
         );
     }
 
@@ -145,15 +145,15 @@ mod tests {
     #[test]
     fn explanation_must_be_in_its_own_folder() {
         assert_eq!(
-            md_file_name(EXPLANATIONS_DIR, "/scclient/bad_modpacks_mds/test.md"),
+            md_file_name(EXPLANATIONS_DIR, "/oneclient/bad_modpacks_mds/test.md"),
             Some("test.md")
         );
         assert_eq!(
-            md_file_name(EXPLANATIONS_DIR, "/scclient/bad_mods_mds/test.md"),
+            md_file_name(EXPLANATIONS_DIR, "/oneclient/bad_mods_mds/test.md"),
             None
         );
         assert_eq!(
-            md_file_name(EXPLANATIONS_DIR, "/scclient/bad_modpacks_mds/../x.md"),
+            md_file_name(EXPLANATIONS_DIR, "/oneclient/bad_modpacks_mds/../x.md"),
             None
         );
     }

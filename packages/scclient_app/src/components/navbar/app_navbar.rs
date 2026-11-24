@@ -10,7 +10,7 @@ use crate::{
     components::{Avatar, HomeStack, Icon, IconType, use_home_stack},
     hooks::{
         settled_or_loading, try_default_account, use_active_cluster_id, use_browser_type,
-        use_chat_allowed, use_chat_unread, use_clusters, use_current_account, use_dispatch,
+        use_chat_unread, use_clusters, use_current_account, use_dispatch,
         use_notifications_snapshot,
     },
     i18n::t,
@@ -98,14 +98,11 @@ fn navbar_left(show_logo: bool, over_art: bool) -> impl IntoElement {
         .maybe(!show_logo, |el| {
             el.padding(Gaps::new(0., NAV_LINK_SPACING_PX, 0., 0.))
         })
-        .child(
-            Icon::new(IconType::IconLogo)
-                .size(COMPACT_LOGO_PX)
-                .color(primary_color(over_art))
-                .into_element(),
-        )
-        .maybe(show_logo, |rect| {
-            rect.child(NavbarLogo { over_art }.into_element())
+        // The SC logo: smaller when the window is narrow (OneClient showed its star there)
+        .child(if show_logo {
+            NavbarLogo { over_art }.into_element()
+        } else {
+            theme::logo_image(COMPACT_LOGO_PX)
         })
 }
 
@@ -323,7 +320,6 @@ impl Component for NavbarRight {
         let dispatch = use_dispatch();
         let unread = use_notifications_snapshot().unread_count();
         let unread_chats = use_chat_unread();
-        let chat_allowed = use_chat_allowed();
 
         let has_account = settled_or_loading(&current_account)
             .is_none_or(|account| account.is_some_and(|account| account.is_microsoft()));
@@ -332,13 +328,8 @@ impl Component for NavbarRight {
             .map(|account| account.id.to_string())
             .unwrap_or_else(|| uuid::Uuid::nil().to_string());
 
-        let social_dispatch = dispatch.clone();
         let toggle_social = move |_| {
-            if crate::view::chat::is_chat_window_open() {
-                crate::view::chat::open_chat_window();
-            } else {
-                social_dispatch.toggle_social();
-            }
+            let _ = RouterContext::get().push(Route::Friends {});
         };
 
         let notif_dispatch = dispatch.clone();
@@ -356,13 +347,13 @@ impl Component for NavbarRight {
             .main_align(Alignment::End)
             .cross_align(Alignment::Center)
             .spacing(8.)
-            .maybe_child(chat_allowed.then(|| {
+            .child(
                 super::navbar_button(foreground)
                     .tooltip(t("scclient.components.navbar.social"))
                     .enabled(has_account)
                     .child(social_icon(unread_chats))
-                    .on_press(toggle_social)
-            }))
+                    .on_press(toggle_social),
+            )
             .child(
                 super::navbar_button(foreground)
                     .tooltip(t("scclient.components.navbar.notifications"))

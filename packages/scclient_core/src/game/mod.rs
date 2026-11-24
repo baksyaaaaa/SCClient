@@ -1,5 +1,6 @@
 mod analytics;
 mod chrome;
+mod scbrand;
 mod error;
 pub mod fabric;
 mod folder_packs;

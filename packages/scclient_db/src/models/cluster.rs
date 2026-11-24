@@ -8,6 +8,7 @@ pub type ClusterId = i64;
 #[repr(i64)]
 pub enum ClusterKind {
     #[default]
+    #[serde(rename = "one_client", alias = "sc_client")] // the name OneClient share files use
     SCClient = 0,
     Vanilla = 1,
     Modded = 2,

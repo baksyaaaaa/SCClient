@@ -1,7 +1,8 @@
 pub const DUMMY_REPLACE_NEWLINE: &str = "\n";
 
 pub const MICROSOFT_CLIENT_ID: &str = "5e0662c2-5c39-4893-9e50-008a14d4f4e7";
-pub const MINECRAFT_SCOPES: &str = "XboxLive.SignIn XboxLive.offline_access";
+// Same scopes as the Chrome Client launcher (minecraft_launcher_lib), which signs in fine with this Azure app
+pub const MINECRAFT_SCOPES: &str = "XboxLive.signin offline_access";
 pub const CURSEFORGE_API_KEY: &str = "$2a$10$6utA1UNSmFPrE/Lh7b7ndeeGmiOkjKNY8kpFB0fsmE/d42ZAfFgCe";
 pub const DISCORD_CLIENT_ID: &str = "1426999264633946334";
 
@@ -22,11 +23,11 @@ pub const CRASH_DATA_URL: &str =
 
 pub const DISCORD_URL: &str = "https://discord.com/invite/polyfrost";
 
+/// Crash reports are off unless a Sentry DSN of your own is set at build time (SCCLIENT_SENTRY_DSN);
+/// the built-in one belonged to Polyfrost.
 pub const SENTRY_DSN: &str = match option_env!("SCCLIENT_SENTRY_DSN") {
     Some(dsn) => dsn,
-    None => {
-        "https://e7dff7e07427e1a28b9212cfcc8ddc1e@o4511714343124992.ingest.us.sentry.io/4511714354135040"
-    }
+    None => "",
 };
 
 pub const LAUNCHER_LABEL: &str = concat!(

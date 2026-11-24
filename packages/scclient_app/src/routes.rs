@@ -11,7 +11,7 @@ use crate::layout::SettingsShell;
 use crate::view::{
     NotFound, Relocating, Startup,
     app::{
-        Clusters, Debug, Home, Stats, Wardrobe,
+        Clusters, Debug, Friends, Home, Stats, Wardrobe,
         browser::{Browser, BrowserPackage},
         cluster::{
             ClusterDataPacks, ClusterLogs, ClusterMods, ClusterOverview, ClusterScreenshots,
@@ -102,6 +102,8 @@ pub enum Route {
             },
             #[route("/app/wardrobe")]
             Wardrobe {},
+            #[route("/app/friends")]
+            Friends {},
             #[route("/app/stats")]
             Stats {},
             #[route("/app/debug")]
@@ -171,6 +173,7 @@ impl Route {
             Route::Browser { .. } => t("scclient.routes.browser"),
             Route::BrowserPackage { .. } => t("scclient.routes.browser_package"),
             Route::Wardrobe { .. } => t("scclient.routes.wardrobe"),
+            Route::Friends { .. } => "Friends",
             Route::Stats { .. } => t("scclient.routes.stats"),
             Route::Debug { .. } => t("scclient.routes.debug"),
             Route::SettingsAppearance { .. } => t("scclient.routes.settings_appearance"),

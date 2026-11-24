@@ -50,7 +50,7 @@ impl TermsDocument {
 
 #[tracing::instrument(level = "debug", skip(net))]
 pub async fn fetch_terms(net: &RequestClient) -> LauncherResult<TermsDocument> {
-    let url = format!("{}/scclient/tos.json", net.config().meta_url_base);
+    let url = format!("{}/oneclient/tos.json", net.config().meta_url_base);
     let cache_path = paths::caches_dir()?.join("TERMS.json");
 
     let fetched = fetch_cached(net, &url, &cache_path, EtagPolicy::CommitNow)

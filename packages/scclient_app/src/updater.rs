@@ -75,7 +75,15 @@ async fn run_simulated_update() -> anyhow::Result<()> {
     Ok(())
 }
 
+/// SC Client has no signed update feed (the updater key belongs to Polyfrost), so self-update stays off.
+/// New builds are on the GitHub Releases page.
+const UPDATES_ENABLED: bool = false;
+
 async fn run_check(auto_install: bool, events: EventBus) -> anyhow::Result<()> {
+    if !UPDATES_ENABLED {
+        tracing::debug!("self-update is off; new builds are on {RELEASES_URL}");
+        return Ok(());
+    }
     // `check_update` performs a blocking HTTP request so offload it to a thread pool
     let Some(update) = tokio::task::spawn_blocking(check_for_update).await?? else {
         tracing::info!("no update available");

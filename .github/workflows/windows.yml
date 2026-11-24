@@ -1,0 +1,116 @@
+name: SC Client (Windows)
+
+# Builds SC Client for Windows on every push to main and publishes it as the latest GitHub Release:
+#   https://github.com/baksyaaaaa/SCClient/releases/latest/download/SC-Client-Setup.exe
+#   https://github.com/baksyaaaaa/SCClient/releases/latest/download/SC-Client-Portable.zip
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: sc-client-windows
+  cancel-in-progress: true
+
+# Unsigned builds don't need the release profile's whole-program LTO (it is what makes builds slow).
+env:
+  CARGO_PROFILE_RELEASE_LTO: thin
+  CARGO_PROFILE_RELEASE_CODEGEN_UNITS: '16'
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    permissions:
+      contents: write   # publishes the release
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          target: ''
+          save-cache: true
+          restore-cache: true
+          cache-namespace: windows-cache
+
+      - name: Install cargo-packager
+        uses: ./.github/actions/install-cargo-tool
+        with:
+          tool: cargo-packager
+          version: 0.11.8
+
+      - name: Build
+        shell: bash
+        run: cargo build --release --bin scclient_app
+
+      - name: Stage the VC++ runtime next to the app
+        shell: bash
+        run: python3 distribution/windows/bundle-crt.py
+
+      - name: Check the staged runtime is Microsoft-signed
+        shell: pwsh
+        run: |
+          $dlls = @(Get-ChildItem 'target/crt/*.dll')
+          if ($dlls.Count -eq 0) { Write-Error 'no CRT DLLs staged'; exit 1 }
+          foreach ($dll in $dlls) {
+            $sig = Get-AuthenticodeSignature $dll.FullName
+            Write-Host "$($dll.Name): $($sig.Status) $($sig.SignerCertificate.Subject)"
+            if ($sig.Status -ne 'Valid' -or $sig.SignerCertificate.Subject -notmatch 'O=Microsoft Corporation') {
+              Write-Error "$($dll.Name) is not a valid Microsoft-signed DLL"; exit 1
+            }
+          }
+
+      - name: Make the installer
+        shell: bash
+        env:
+          CI: 'true'
+        run: cargo packager --release --formats nsis --verbose
+
+      - name: Test the installer
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $dest = 'C:\sc-client-smoke'
+          Remove-Item -Recurse -Force $dest -ErrorAction SilentlyContinue
+          $exe = (Get-ChildItem 'target/release/*-setup.exe')[0].FullName
+          $p = Start-Process -FilePath $exe -ArgumentList '/S', "/D=$dest" -Wait -PassThru
+          if ($p.ExitCode -ne 0) { Write-Error "installer exited $($p.ExitCode)"; exit 1 }
+          if (-not (Test-Path "$dest\scclient_app.exe")) { Write-Error 'scclient_app.exe was not installed'; exit 1 }
+          foreach ($dll in @(Get-ChildItem 'target/crt/*.dll')) {
+            if (-not (Test-Path (Join-Path $dest $dll.Name))) { Write-Error "$($dll.Name) is missing next to the app"; exit 1 }
+          }
+          Write-Host 'installer OK'
+
+      - name: Collect the downloads
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Force dist, portable | Out-Null
+          Copy-Item (Get-ChildItem 'target/release/*-setup.exe')[0].FullName 'dist/SC-Client-Setup.exe'
+          Copy-Item 'target/release/scclient_app.exe' 'portable/SC Client.exe'
+          Copy-Item 'target/crt/*.dll' 'portable/'
+          Compress-Archive -Path 'portable/*' -DestinationPath 'dist/SC-Client-Portable.zip'
+          Get-ChildItem dist
+
+      - name: Keep the files on this run too
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: SC-Client-Windows
+          path: dist/*
+          retention-days: 14
+
+      - name: Publish as the latest release
+        if: github.ref == 'refs/heads/main'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          TAG=windows-latest
+          SHA=$(git rev-parse --short HEAD)
+          gh release delete "$TAG" --cleanup-tag --yes 2>/dev/null || true
+          gh release create "$TAG" dist/SC-Client-Setup.exe dist/SC-Client-Portable.zip \
+            --title "SC Client (Windows) - $SHA" \
+            --notes "Windows build of commit $SHA. Download **SC-Client-Setup.exe** and run it. Windows may say it protected your PC because the app isn't code-signed: click More info, then Run anyway." \
+            --target "$GITHUB_SHA" --latest

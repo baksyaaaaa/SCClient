@@ -7,7 +7,7 @@ use scclient_common::paths;
 use scclient_net::RequestClient;
 use scclient_net::{EtagPolicy, fetch_cached};
 
-const MESSAGES_DIR: &str = "/scclient/bundles/disable-warnings/";
+const MESSAGES_DIR: &str = "/oneclient/bundles/disable-warnings/";
 
 #[derive(Debug, Default, Deserialize)]
 struct Manifest {
@@ -85,7 +85,7 @@ fn resolve(manifest: Manifest, bodies: &HashMap<String, String>) -> DisableWarni
 #[tracing::instrument(level = "debug", skip(net))]
 pub async fn fetch_disable_warnings(net: &RequestClient) -> LauncherResult<DisableWarnings> {
     let url = format!(
-        "{}/scclient/bundles/disable-warnings.json",
+        "{}/oneclient/bundles/disable-warnings.json",
         net.config().meta_url_base
     );
     let cache_path = paths::caches_dir()?.join("disable-warnings.json");
@@ -131,11 +131,11 @@ mod tests {
     #[test]
     fn only_listed_mods_get_a_warning() {
         let manifest = parse(
-            r#"{"mods":{"Iw9mZi4a":{"message":"/scclient/bundles/disable-warnings/scplus.md"}}}"#,
+            r#"{"mods":{"Iw9mZi4a":{"message":"/oneclient/bundles/disable-warnings/polyplus.md"}}}"#,
         );
         let warnings = resolve(
             manifest,
-            &bodies(&[("/scclient/bundles/disable-warnings/scplus.md", "SC+")]),
+            &bodies(&[("/oneclient/bundles/disable-warnings/polyplus.md", "SC+")]),
         );
 
         assert_eq!(warnings.body_for("Iw9mZi4a"), Some("SC+"));
@@ -145,7 +145,7 @@ mod tests {
     #[test]
     fn unfetched_message_means_no_warning() {
         let manifest = parse(
-            r#"{"mods":{"Iw9mZi4a":{"message":"/scclient/bundles/disable-warnings/scplus.md"}}}"#,
+            r#"{"mods":{"Iw9mZi4a":{"message":"/oneclient/bundles/disable-warnings/polyplus.md"}}}"#,
         );
         let warnings = resolve(manifest, &HashMap::new());
 
@@ -162,20 +162,20 @@ mod tests {
     #[test]
     fn message_paths_are_confined_to_the_warnings_dir() {
         assert_eq!(
-            message_file_name("/scclient/bundles/disable-warnings/scplus.md"),
+            message_file_name("/oneclient/bundles/disable-warnings/polyplus.md"),
             Some("polyplus.md")
         );
         assert_eq!(
-            message_file_name("/scclient/bundles/disable-warnings/../x.md"),
+            message_file_name("/oneclient/bundles/disable-warnings/../x.md"),
             None
         );
         assert_eq!(
-            message_file_name("/scclient/bundles/disable-warnings/a/b.md"),
+            message_file_name("/oneclient/bundles/disable-warnings/a/b.md"),
             None
         );
-        assert_eq!(message_file_name("/scclient/tos.json"), None);
+        assert_eq!(message_file_name("/oneclient/tos.json"), None);
         assert_eq!(
-            message_file_name("/scclient/bundles/disable-warnings/.md"),
+            message_file_name("/oneclient/bundles/disable-warnings/.md"),
             None
         );
     }
