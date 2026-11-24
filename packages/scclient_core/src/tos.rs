@@ -1,10 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{LauncherError, LauncherResult};
+use crate::LauncherResult;
 use scclient_common::constants;
-use scclient_common::paths;
 use scclient_net::RequestClient;
-use scclient_net::{EtagPolicy, fetch_cached};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TermsDocument {
@@ -48,18 +46,26 @@ impl TermsDocument {
     }
 }
 
-#[tracing::instrument(level = "debug", skip(net))]
-pub async fn fetch_terms(net: &RequestClient) -> LauncherResult<TermsDocument> {
-    let url = format!("{}/oneclient/tos.json", net.config().meta_url_base);
-    let cache_path = paths::caches_dir()?.join("TERMS.json");
+/// SC Client's own terms version. Higher than any OneClient version, so everyone who accepted OneClient's terms is
+/// asked once to accept SC Client's. Raise it whenever terms.md or privacy.md changes.
+pub const SC_TERMS_VERSION: u32 = 100;
 
-    let fetched = fetch_cached(net, &url, &cache_path, EtagPolicy::CommitNow)
-        .await?
-        .ok_or_else(|| LauncherError::InvalidSettingsProfile {
-            reason: "terms are unavailable and not cached".to_string(),
-        })?;
+/// SC Client's terms and privacy policy, built into the app (OneClient's came from Polyfrost's server)
+pub fn sc_terms() -> TermsDocument {
+    TermsDocument {
+        version: SC_TERMS_VERSION,
+        privacy_version: Some(SC_TERMS_VERSION),
+        updated_at: Some("2026-11-24".to_string()),
+        terms: include_str!("legal/terms.md").to_string(),
+        privacy: Some(include_str!("legal/privacy.md").to_string()),
+        terms_url: None,
+        privacy_url: None,
+    }
+}
 
-    Ok(fetched.json()?)
+#[tracing::instrument(level = "debug", skip(_net))]
+pub async fn fetch_terms(_net: &RequestClient) -> LauncherResult<TermsDocument> {
+    Ok(sc_terms())
 }
 
 #[cfg(test)]

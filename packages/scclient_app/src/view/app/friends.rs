@@ -1,5 +1,4 @@
-//! Friends and direct messages through the Chrome Client service - the same friends you have in game with the
-//! Chrome Client mod. Sign-in is Mojang's own check, using the launcher's Microsoft account.
+//! Friends and direct messages through the SC Client service - the same friends you have in game. Sign-in is Mojang's own check, using the launcher's Microsoft account.
 
 use std::time::Duration;
 
@@ -24,7 +23,7 @@ pub struct Friends;
 impl Component for Friends {
     fn render(&self) -> impl IntoElement {
         let social = use_state(|| None::<SocialState>);
-        let mut status = use_state(|| "Connecting to Chrome Client friends...".to_string());
+        let mut status = use_state(|| "Connecting to SC Client friends...".to_string());
         let mut open = use_state(|| None::<Open>);
         let mut lines = use_state(Vec::<Message>::new);
         let mut last_id = use_state(|| 0u64);
@@ -103,7 +102,7 @@ impl Component for Friends {
 
         let snapshot = social.read().clone();
         let status_text = if status.read().is_empty() {
-            "The same friends and messages as in game with the Chrome Client mod.".to_string()
+            "The same friends and messages as in game.".to_string()
         } else {
             status.read().clone()
         };
@@ -160,7 +159,7 @@ impl Component for Friends {
             }
             left = left.child(section(&format!("Friends ({})", s.friends.len())));
             if s.friends.is_empty() {
-                left = left.child(muted("No friends yet. Add someone who uses Chrome Client or SC Client."));
+                left = left.child(muted("No friends yet. Add someone who uses SC Client."));
             }
             let mut list = rect().vertical().spacing(4.).width(Size::fill());
             for f in &s.friends {

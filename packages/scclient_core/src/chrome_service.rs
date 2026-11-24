@@ -70,6 +70,13 @@ impl Picks {
         }
     }
 
+    /// These picks with item `index` of `category` equipped
+    #[must_use]
+    pub fn with(mut self, category: usize, index: usize) -> Self {
+        self.set(category.min(2), index);
+        self
+    }
+
     fn set(&mut self, category: usize, index: usize) {
         let index = index.min(items(category).len() - 1);
         match category {
@@ -106,26 +113,31 @@ async fn save_picks(picks: &Picks) -> std::io::Result<()> {
     tokio::fs::rename(&tmp, &path).await
 }
 
-/// Equips item `index` of `category` (0 = none), saves it, and tells the service so other players see it right away
-pub async fn choose(state: &Arc<LauncherState>, category: usize, index: usize) -> Result<Picks, String> {
-    let mut picks = load_picks().await;
-    picks.set(category.min(2), index);
-    picks.changed = now_ms();
-    save_picks(&picks).await.map_err(|e| format!("Couldn't save your cosmetics: {e}"))?;
-    publish(state, &picks).await;
-    Ok(picks)
-}
+/// The newest picks still waiting to be saved; quick clicks in a row end up as one save
+static PENDING: std::sync::Mutex<Option<Picks>> = std::sync::Mutex::new(None);
 
-/// Takes everything off
-pub async fn clear_all(state: &Arc<LauncherState>) -> Result<Picks, String> {
-    let picks = Picks { changed: now_ms(), ..Picks::default() };
-    save_picks(&picks).await.map_err(|e| format!("Couldn't save your cosmetics: {e}"))?;
-    publish(state, &picks).await;
-    Ok(picks)
+/// Saves `picks` and tells the service, in the background: the wardrobe shows the change straight away and never
+/// waits for the network. Must be called from inside the launcher's async runtime.
+pub fn apply_picks(state: Arc<LauncherState>, mut picks: Picks) {
+    picks.changed = now_ms();
+    if let Ok(mut pending) = PENDING.lock() {
+        *pending = Some(picks);
+    }
+    tokio::spawn(async move {
+        tokio::time::sleep(Duration::from_millis(350)).await;
+        let Some(picks) = PENDING.lock().ok().and_then(|mut p| p.take()) else { return };
+        if let Err(err) = save_picks(&picks).await {
+            tracing::warn!(error = %err, "couldn't save the cosmetics");
+        }
+        publish(&state, &picks).await;
+    });
 }
 
 /// `POST /set` like the mod's CosmeticSync.publish (best effort: the mod sends it again in game anyway)
 async fn publish(state: &Arc<LauncherState>, picks: &Picks) {
+    if scclient_common::consent::declined() {
+        return; // the SC Client terms were declined
+    }
     let Ok(Some(account)) = state.auth.default_account().await else { return };
     let body = json!({
         "u": account.id.hyphenated().to_string(),
@@ -252,7 +264,7 @@ async fn send(
     if let Some(body) = body {
         req = req.json(&body);
     }
-    let res = req.send().await.map_err(|_| "Can't reach the Chrome Client service right now.".to_string())?;
+    let res = req.send().await.map_err(|_| "Can't reach the SC Client service right now.".to_string())?;
     let status = res.status().as_u16();
     let value = res.json::<Value>().await.unwrap_or(Value::Null);
     Ok((status, value))
@@ -276,7 +288,7 @@ async fn log_in(state: &Arc<LauncherState>) -> Result<(Uuid, String), String> {
     let nonce = nonce
         .get("nonce")
         .and_then(Value::as_str)
-        .ok_or_else(|| "The Chrome Client service didn't answer. Try again in a moment.".to_string())?
+        .ok_or_else(|| "The SC Client service didn't answer. Try again in a moment.".to_string())?
         .to_string();
 
     let join = state
@@ -318,6 +330,9 @@ async fn authed(
     path: &str,
     body: Option<Value>,
 ) -> Result<Value, String> {
+    if scclient_common::consent::declined() {
+        return Err("Friends need the SC Client terms accepted (Settings > Launcher).".into());
+    }
     let current = state.auth.default_account().await.ok().flatten().map(|a| a.id);
     for attempt in 0..2 {
         let token = {
@@ -347,7 +362,7 @@ async fn authed(
 
 pub async fn social_state(state: &Arc<LauncherState>) -> Result<SocialState, String> {
     let value = authed(state, reqwest::Method::GET, "/social/state", None).await?;
-    serde_json::from_value(value).map_err(|_| "The Chrome Client service sent something unexpected.".into())
+    serde_json::from_value(value).map_err(|_| "The SC Client service sent something unexpected.".into())
 }
 
 pub async fn add_friend(state: &Arc<LauncherState>, name: &str) -> Result<(), String> {

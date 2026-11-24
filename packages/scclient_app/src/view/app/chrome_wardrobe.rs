@@ -1,5 +1,5 @@
-//! The wardrobe: Chrome Client's own hats, capes and wings (the same list as the Chrome Client mod).
-//! Picks are saved by the launcher, sent to the Chrome Client service, and put into each game before it starts.
+//! The wardrobe: SC Client's hats, capes and wings (the same list as the in-game mod).
+//! Picks are saved by the launcher, sent to the SC Client service, and put into each game before it starts.
 
 use freya::prelude::*;
 use scclient_core::chrome_service::{self, CATEGORIES, Picks};
@@ -17,7 +17,7 @@ impl Component for ChromeWardrobe {
     fn render(&self) -> impl IntoElement {
         let mut picks = use_state(|| None::<Picks>);
         let category = use_state(|| 0usize);
-        let mut status = use_state(String::new);
+        let status = use_state(String::new);
 
         use_hook(move || {
             spawn(async move {
@@ -31,31 +31,20 @@ impl Component for ChromeWardrobe {
         let names = chrome_service::items(cat);
         let equipped = current.map(|p| p.get(cat)).unwrap_or(0);
 
+        // shows the pick at once; saving and the SC Client service happen in the background
+        let wear = move |p: Picks, message: &str| {
+            let (mut picks, mut status) = (picks, status);
+            picks.set(Some(p));
+            status.set(message.to_string());
+            if let Ok(state) = launcher::state() {
+                chrome_service::apply_picks(state, p);
+            }
+        };
         let equip = move |index: usize| {
-            spawn(async move {
-                let Ok(state) = launcher::state() else { return };
-                match launcher::off_ui(async move { chrome_service::choose(&state, cat, index).await }).await {
-                    Ok(p) => {
-                        picks.set(Some(p));
-                        status.set(String::new());
-                    }
-                    Err(err) => status.set(err),
-                }
-            });
+            let base = picks.peek().unwrap_or_default();
+            wear(base.with(cat, index), "");
         };
-
-        let clear = move |_| {
-            spawn(async move {
-                let Ok(state) = launcher::state() else { return };
-                match launcher::off_ui(async move { chrome_service::clear_all(&state).await }).await {
-                    Ok(p) => {
-                        picks.set(Some(p));
-                        status.set("Took everything off.".into());
-                    }
-                    Err(err) => status.set(err),
-                }
-            });
-        };
+        let clear = move |_| wear(Picks::default(), "Took everything off.");
 
         let mut tabs = rect().horizontal().spacing(8.).cross_align(Alignment::Center);
         for (i, name) in CATEGORIES.iter().enumerate() {
@@ -127,7 +116,7 @@ fn header() -> Element {
         )
         .child(
             label()
-                .text("Chrome Client cosmetics. Everyone who plays with the Chrome Client mod sees them on you.")
+                .text("SC Client cosmetics. Everyone who plays with SC Client sees them on you.")
                 .font_size(text_size(13.))
                 .color(colors::fg_secondary()),
         )
@@ -143,7 +132,7 @@ fn note() -> Element {
         .child(
             label()
                 .text(
-                    "Your picks are put into the game when you press Play (Fabric versions with the Chrome Client mod). \
+                    "Your picks are put into the game when you press Play (Fabric versions). \
                      If you change them in game, the launcher picks that up the next time you play.",
                 )
                 .font_size(text_size(12.))
