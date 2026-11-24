@@ -30,6 +30,11 @@ RULES = [
     (r"\boriginal\.render\(", "original.extractRenderState("),
     (r"\.mulPose\((com\.mojang\.math\.Axis\.\w+\.rotation(?:Degrees)?\(.*\))\);", r".rotate(\1);"),
     (r"RenderTypes\.entityCutoutNoCull\(", "RenderTypes.entityCutout("),
+    # 26.x: submitModelPart(part, pose, type, light, overlay, UvMapping, color) replaces the sprite + flags + crumbling + outline form
+    (r"null,\s*false,\s*false,\s*([^,]+?),\s*null,\s*0\)", r"null, \1)"),
+    # 26.x: VertexConsumer gained setUv3
+    (r"(@Override public VertexConsumer setUv2\(int u, int v\) \{ to\.setUv2\(u, v\); return this; \})",
+     r"\1\n    @Override public VertexConsumer setUv3(float u, float v) { to.setUv3(u, v); return this; }"),
 ]
 for f in SRC.rglob("*.java"):
     s = f.read_text(encoding="utf-8")
