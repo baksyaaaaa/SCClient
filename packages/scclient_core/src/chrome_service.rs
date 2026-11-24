@@ -210,6 +210,12 @@ pub struct Friend {
     pub online: bool,
     #[serde(default)]
     pub unread: u32,
+    /// player UUIDs whose faces to show for this entry (the SC Client chat shows the team's)
+    #[serde(default)]
+    pub faces: Vec<String>,
+    /// the SC Client team chat (one message every 14 days)
+    #[serde(default)]
+    pub team: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]

@@ -5,7 +5,7 @@ use std::time::Duration;
 use freya::prelude::*;
 use scclient_core::chrome_service::{self, Message, SocialState};
 
-use crate::components::{Button, ScrollArea, TextInput};
+use crate::components::{Avatar, Button, ScrollArea, TextInput};
 use crate::launcher;
 use crate::theme::{colors, rounded, text_size};
 
@@ -15,6 +15,8 @@ const KEEP: usize = 200;
 struct Open {
     uuid: String,
     name: String,
+    faces: Vec<String>,
+    team: bool,
 }
 
 #[derive(PartialEq)]
@@ -163,7 +165,8 @@ impl Component for Friends {
             }
             let mut list = rect().vertical().spacing(4.).width(Size::fill());
             for f in &s.friends {
-                let pick = Open { uuid: f.uuid.clone(), name: f.name.clone() };
+                let face_ids = if f.faces.is_empty() { vec![f.uuid.clone()] } else { f.faces.clone() };
+                let pick = Open { uuid: f.uuid.clone(), name: f.name.clone(), faces: face_ids.clone(), team: f.team };
                 let selected = current.as_ref().is_some_and(|o| o.uuid == f.uuid);
                 let text = if f.unread > 0 { format!("{}  ({} new)", f.name, f.unread) } else { f.name.clone() };
                 let button = Button::new()
@@ -173,7 +176,8 @@ impl Component for Friends {
                             .horizontal()
                             .spacing(10.)
                             .cross_align(Alignment::Center)
-                            .child(dot(f.online))
+                            .child(faces_row(&face_ids, 24.))
+                            .maybe_child((!f.team).then(|| dot(f.online)))
                             .child(label().text(text).font_size(text_size(14.)).color(colors::fg_primary())),
                     )
                     .on_press(move |_| {
@@ -225,6 +229,8 @@ impl Component for Friends {
                             .horizontal()
                             .width(Size::fill())
                             .cross_align(Alignment::Center)
+                            .spacing(10.)
+                            .child(faces_row(&who.faces, 32.))
                             .child(
                                 label()
                                     .text(who.name.clone())
@@ -233,13 +239,16 @@ impl Component for Friends {
                                     .font_weight(FontWeight::BOLD)
                                     .color(colors::fg_primary()),
                             )
-                            .child(Button::new().ghost().small().text("Remove friend").on_press(move |_| {
-                                let u = remove_uuid.clone();
-                                open.set(None);
-                                act(social, status, move |st| async move { chrome_service::friend_action(&st, "remove", &u).await }, None)
+                            .maybe_child((!who.team).then(|| {
+                                Button::new().ghost().small().text("Remove friend").on_press(move |_| {
+                                    let u = remove_uuid.clone();
+                                    open.set(None);
+                                    act(social, status, move |st| async move { chrome_service::friend_action(&st, "remove", &u).await }, None)
+                                })
                             })),
                     )
                     .child(ScrollArea::new().width(Size::fill()).height(Size::flex(1.0)).child(msgs))
+                    .maybe_child(who.team.then(|| muted("You can send one message here every 14 days, so make it count.")))
                     .child(
                         rect()
                             .horizontal()
@@ -344,6 +353,15 @@ fn person_row(name: &str, color: Color) -> Rect {
         .spacing(6.)
         .cross_align(Alignment::Center)
         .child(label().text(name.to_string()).width(Size::flex(1.0)).font_size(text_size(14.)).color(color))
+}
+
+/// player heads side by side (the SC Client chat shows both creators)
+fn faces_row(uuids: &[String], size: f32) -> Element {
+    let mut row = rect().horizontal().spacing(2.).cross_align(Alignment::Center);
+    for uuid in uuids.iter().take(3) {
+        row = row.child(Avatar::new(uuid.clone()).size(size).radius(size / 4.));
+    }
+    row.into_element()
 }
 
 fn dot(online: bool) -> Element {
