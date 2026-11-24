@@ -1,11 +1,11 @@
 <div align="center">
 
-<img src=".github/media/RepoBanner.png" alt="Repository Banner" />
+<img src=".github/media/RepoBanner.png" alt="SC Client" />
 
-# SCClient  |  SCLauncher
-The monorepo containing the code for SCLauncher, SCClient, and their core backend.
+# SC Client
+The code for the SC Client launcher and its core backend.
 
-SCClient is a Minecraft client featuring fully 100% open-source components, offering many packaged and pre-configured mods in one click.
+SC Client is a Minecraft client featuring fully 100% open-source components, offering many packaged and pre-configured mods in one click.
 
 </div>
 
