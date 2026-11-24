@@ -128,7 +128,7 @@ fn open_editor(id: String) {
     let _ = RouterContext::get().push(Route::SettingsThemeEditor { id });
 }
 
-/// New custom themes start as a copy of the built-in SCGlass dark and light pair
+/// New custom themes start as a copy of the built-in SC dark and light pair
 fn create_theme(dispatch: &Actions) {
     let dispatch = dispatch.clone();
     // The window task below has no component context to find the router in

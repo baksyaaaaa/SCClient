@@ -619,7 +619,7 @@ fn miniature(theme: &Theme, pixel: bool, dense: bool) -> Element {
             .color(color)
     };
     // The pixel font draws visibly smaller at the same size, so it runs a step larger to
-    // read the same as SCGlass
+    // read the same as the SC theme
     let (title_size, body_size, meta_size) = if pixel {
         (14., 13., 11.)
     } else {

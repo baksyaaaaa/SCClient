@@ -15,7 +15,7 @@ pub mod colors;
 
 pub const NAVBAR_HEIGHT_PX: f32 = 80.;
 pub const HOME_PADDING_PX: f32 = 48.;
-pub const DEFAULT_FONT: &str = "Poppins";
+pub const DEFAULT_FONT: &str = "Sora";
 pub const MONO_FONT: &str = "JetBrains Mono";
 const MINECRAFT_FONT: &str = "Minecraft";
 const PIXEL_BOOST_MAX: f32 = 2.5;
@@ -411,7 +411,7 @@ fn fill_missing_variants(themes: &mut Vec<Theme>) {
     }
 }
 
-/// The first built-in palette for the light or dark side (SCGlass)
+/// The first built-in palette for the light or dark side (SC)
 fn builtin_colors<'a>(mut themes: impl Iterator<Item = &'a Theme>, light: bool) -> Palette {
     themes
         .find(|theme| theme.is_builtin() && theme.colors.light == light)
@@ -515,17 +515,12 @@ pub fn rounded(radius: f32) -> CornerRadius {
 }
 
 pub fn load_fonts() -> Vec<(Cow<'static, str>, Bytes)> {
-    const FONTS: [(&str, &str); 13] = [
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-Bold.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-BoldItalic.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-SemiBold.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-SemiBoldItalic.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-Medium.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-MediumItalic.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-Regular.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-Italic.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-Light.ttf"),
-        (DEFAULT_FONT, "fonts/Poppins/Poppins-LightItalic.ttf"),
+    const FONTS: [(&str, &str); 8] = [
+        (DEFAULT_FONT, "fonts/Sora/Sora-Bold.ttf"),
+        (DEFAULT_FONT, "fonts/Sora/Sora-SemiBold.ttf"),
+        (DEFAULT_FONT, "fonts/Sora/Sora-Medium.ttf"),
+        (DEFAULT_FONT, "fonts/Sora/Sora-Regular.ttf"),
+        (DEFAULT_FONT, "fonts/Sora/Sora-Light.ttf"),
         (MONO_FONT, "fonts/JetBrainsMono/JetBrainsMonoVariable.ttf"),
         (MINECRAFT_FONT, "fonts/Minecraft/Minecraft-Regular.otf"),
         (MINECRAFT_FONT, "fonts/Minecraft/Minecraft-Bold.otf"),

@@ -1,14 +1,15 @@
 {
-  "name": "SCGlass Dark",
+  "name": "SC Dark",
+  "radius_scale": 0.6,
   "colors": {
     "light": false,
-    "page": "#11171C",
-    "page_elevated": "#151C22",
-    "card": "#1A2229",
-    "component": "#1A2229",
-    "border": "#FFFFFF1A",
-    "text": "#D5DBFF",
-    "text_secondary": "#757883",
-    "accent": "#2B4BFF"
+    "page": "#070B17",
+    "page_elevated": "#0A1122",
+    "card": "#0E172E",
+    "component": "#111C38",
+    "border": "#3D7BFF2E",
+    "text": "#E4EEFF",
+    "text_secondary": "#7D8CAD",
+    "accent": "#2D6BFF"
   }
 }
