@@ -1,10 +1,11 @@
-//! Chrome Client in every game this launcher starts.
+//! The SC menu and cosmetics in every game this launcher starts.
 //!
 //! The mod bundles install Polyfrost's PolyPlus (Modrinth `Iw9mZi4a`), whose start screen has the
 //! store wardrobe, the Marketplace tab, Polyfrost social and the News tab. Before each Fabric launch
-//! this swaps it for Chrome Client's own copy of PolyPlus ("ChromePoly", no Marketplace or News,
-//! Chrome cosmetics, social through the Chrome website) plus the Chrome Client mod that draws the
-//! cosmetics. Both come from the GitHub Releases of `baksyaaaaa/ChromeMod`.
+//! this swaps it for ChromePoly (the same menu without Marketplace or News, with the SC wardrobe and
+//! social), from the GitHub Releases of `baksyaaaaa/ChromeMod`, plus the SC mod (Wardrobe cosmetics and
+//! the pay timer) from the `latest` release of `baksyaaaaa/SC-Mod`.
+//! The full Chrome Client mod (HUD, menu, music) is not used: any copy of it gets switched off.
 //!
 //! Releases are checked once per launcher run per Minecraft version; the downloaded jars are kept,
 //! so a launch while GitHub is unreachable still uses the last ones.
@@ -27,7 +28,12 @@ const POLY_TAG: &str = "polyplus-latest";
 const POLY_VERSIONS: &[&str] = &["1.21.11", "26.1", "26.2", "26.3"];
 
 const POLY_PREFIX: &str = "ChromePoly-";
-const MOD_PREFIX: &str = "chrome-client-";
+/// the full Chrome Client mod: no longer used, switched off wherever it is
+const OLD_MOD_PREFIX: &str = "chrome-client-";
+/// the SC mod (cosmetics + pay timer)
+const COSMETICS_REPO: &str = "baksyaaaaa/SC-Mod";
+const COSMETICS_TAG: &str = "latest";
+const MOD_PREFIX: &str = "sc-mod-";
 
 /// mc version -> jars found this run (so GitHub is asked once per run)
 static CHECKED: parking_lot::Mutex<Option<HashMap<String, Vec<PathBuf>>>> =
@@ -37,7 +43,7 @@ fn cache_dir() -> Option<PathBuf> {
     paths::data_dir().ok().map(|d| d.join("chrome"))
 }
 
-/// Which build of the Chrome Client mod fits: 1.21.11 has its own, 26.x share the 26.3 build
+/// Which build of the SC mod fits: 1.21.11 has its own, 26.x share the 26.3 build
 fn mod_build(mc: &str) -> Option<&'static str> {
     if mc == "1.21.11" {
         Some("1.21.11")
@@ -51,8 +57,6 @@ fn mod_build(mc: &str) -> Option<&'static str> {
 #[derive(serde::Deserialize)]
 struct Release {
     tag_name: String,
-    #[serde(default)]
-    draft: bool,
     assets: Vec<Asset>,
 }
 
@@ -116,6 +120,7 @@ async fn jars_for(
     tokio::fs::create_dir_all(&dir).await.ok()?;
 
     let releases = fetch_releases(state).await;
+    let cosmetics = fetch_cosmetics_release(state).await;
     let mut found = Vec::new();
 
     if let Some(releases) = &releases {
@@ -129,51 +134,57 @@ async fn jars_for(
         {
             found.push(path);
         }
-        // the mod: newest "build-N" release that has a jar for this version
-        if let Some(build) = build
-            && let Some(asset) = releases
-                .iter()
-                .filter(|r| !r.draft && r.tag_name != POLY_TAG)
-                .flat_map(|r| &r.assets)
-                .find(|a| {
-                    a.name.starts_with(&format!("{MOD_PREFIX}{build}"))
-                        && a.name.ends_with(".jar")
-                        && !a.name.contains("-sources")
-                })
-            && let Some(path) = download(state, &dir, asset).await
-        {
-            found.push(path);
-        }
+    }
+    // the SC mod: one fixed file name per build on its latest release
+    if let Some(build) = build
+        && let Some(asset) = cosmetics
+            .as_ref()
+            .and_then(|r| r.assets.iter().find(|a| a.name == format!("{MOD_PREFIX}{build}.jar")))
+        && let Some(path) = download(state, &dir, asset).await
+    {
+        found.push(path);
     }
 
-    // offline (or GitHub said no): use what was downloaded before
-    if found.is_empty() {
-        let mut cached = Vec::new();
-        if let Ok(mut rd) = tokio::fs::read_dir(&dir).await {
-            while let Ok(Some(entry)) = rd.next_entry().await {
-                let name = entry.file_name().to_string_lossy().to_string();
-                let is_poly = poly && name == format!("{POLY_PREFIX}{mc}.jar");
-                let is_mod = build.is_some_and(|b| name.starts_with(&format!("{MOD_PREFIX}{b}")) && name.ends_with(".jar"));
-                if is_poly || is_mod {
-                    cached.push(entry.path());
-                }
+    // whatever GitHub didn't give us this time (offline, or it said no): use the copy downloaded before
+    let complete = (!poly || found.iter().any(|p| name_of(p).starts_with(POLY_PREFIX)))
+        && (build.is_none() || found.iter().any(|p| name_of(p).starts_with(MOD_PREFIX)));
+    if complete {
+        CHECKED.lock().get_or_insert_with(HashMap::new).insert(mc.to_string(), found.clone());
+    } else {
+        let wanted = [
+            poly.then(|| format!("{POLY_PREFIX}{mc}.jar")),
+            build.map(|b| format!("{MOD_PREFIX}{b}.jar")),
+        ];
+        for name in wanted.into_iter().flatten() {
+            let path = dir.join(&name);
+            if path.is_file() && !found.iter().any(|p| name_of(p) == name) {
+                found.push(path);
             }
         }
-        // only the newest mod jar
-        cached.sort();
-        let mut keep: Vec<PathBuf> = cached.iter().filter(|p| name_of(p).starts_with(POLY_PREFIX)).cloned().collect();
-        if let Some(last) = cached.iter().filter(|p| name_of(p).starts_with(MOD_PREFIX)).last() {
-            keep.push(last.clone());
-        }
-        found = keep;
-    } else if releases.is_some() {
-        CHECKED.lock().get_or_insert_with(HashMap::new).insert(mc.to_string(), found.clone());
     }
     Some(found)
 }
 
 fn name_of(p: &std::path::Path) -> String {
     p.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default()
+}
+
+async fn fetch_cosmetics_release(state: &Arc<LauncherState>) -> Option<Release> {
+    let res = state
+        .services
+        .requester
+        .http()
+        .get(format!("https://api.github.com/repos/{COSMETICS_REPO}/releases/tags/{COSMETICS_TAG}"))
+        .header("Accept", "application/vnd.github+json")
+        .header("User-Agent", "SCClient")
+        .send()
+        .await
+        .ok()?;
+    if !res.status().is_success() {
+        tracing::warn!(status = %res.status(), "GitHub did not list the SC mod release");
+        return None;
+    }
+    res.json::<Release>().await.ok()
 }
 
 async fn fetch_releases(state: &Arc<LauncherState>) -> Option<Vec<Release>> {
@@ -221,18 +232,6 @@ async fn download(state: &Arc<LauncherState>, dir: &std::path::Path, asset: &Ass
     tokio::fs::write(&tmp, &bytes).await.ok()?;
     tokio::fs::rename(&tmp, &path).await.ok()?;
     let _ = tokio::fs::write(&stamp, &asset.updated_at).await;
-    // older mod builds of the same version are no longer needed
-    if asset.name.starts_with(MOD_PREFIX)
-        && let Some(build) = asset.name.strip_prefix(MOD_PREFIX).and_then(|r| r.split('-').next())
-        && let Ok(mut rd) = tokio::fs::read_dir(dir).await
-    {
-        while let Ok(Some(entry)) = rd.next_entry().await {
-            let n = entry.file_name().to_string_lossy().to_string();
-            if n != asset.name && n.starts_with(&format!("{MOD_PREFIX}{build}")) {
-                let _ = tokio::fs::remove_file(entry.path()).await;
-            }
-        }
-    }
     Some(path)
 }
 
@@ -264,7 +263,10 @@ async fn link(state: &Arc<LauncherState>, cluster_id: i64, jars: &[PathBuf]) -> 
         }
         let polyfrost_plus = l.provider == Some(ProviderId::Modrinth)
             && l.project_id.as_deref() == Some(POLYPLUS_PROJECT);
-        let old_chrome = l.file_name.starts_with(POLY_PREFIX) || l.file_name.starts_with(MOD_PREFIX);
+        // older ChromePoly / cosmetics jars (a new upload has a new hash) and the full Chrome Client mod
+        let old_chrome = l.file_name.starts_with(POLY_PREFIX)
+            || l.file_name.starts_with(MOD_PREFIX)
+            || l.file_name.starts_with(OLD_MOD_PREFIX);
         if (polyfrost_plus && has_poly) || old_chrome {
             PackageStore::set_artifact_enabled_to(cluster_id, &l.hash, false, &ctx).await?;
             tracing::info!(cluster_id, file = %l.file_name, "switched off for Chrome Client");

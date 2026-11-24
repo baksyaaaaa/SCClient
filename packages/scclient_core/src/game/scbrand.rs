@@ -11,7 +11,7 @@ use std::path::Path;
 use async_zip::{Compression, ZipEntryBuilder};
 
 const STAMP: &str = "scbrand.stamp";
-const VERSION: &[u8] = b"sc-brand 2";
+const VERSION: &[u8] = b"sc-brand 3";
 
 const FILES: &[(&str, &[u8])] = &[
     ("assets/polyplus/mainmenu/logo.svg", include_bytes!("brand/mark.svg")),
@@ -23,6 +23,8 @@ const FILES: &[(&str, &[u8])] = &[
     ("assets/polyplus/startup/word_54.png", include_bytes!("brand/word_54.png")),
     ("assets/polyplus/startup/word_108.png", include_bytes!("brand/word_108.png")),
     ("assets/polyplus/startup/word_216.png", include_bytes!("brand/word_216.png")),
+    // the badge in front of SC Client players' names (was the OneClient star)
+    ("assets/polyplus/textures/badge_font.png", include_bytes!("brand/badge_font.png")),
 ];
 
 /// Classes that compare the name with something (launcher / window-title detection): their text stays as it is

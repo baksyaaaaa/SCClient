@@ -10,7 +10,7 @@ const RECONNECT_BACKOFF: Duration = Duration::from_secs(60);
 
 const IDLE_POLL: Duration = Duration::from_secs(3600);
 
-const LARGE_IMAGE: &str = "sclauncher_logo_512";
+const LARGE_IMAGE: &str = "logo";
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub enum Presence {
@@ -171,7 +171,7 @@ impl Worker {
                     .large_image(LARGE_IMAGE)
                     .large_text("SC Client"),
             )
-            .buttons(vec![Button::new("Website", "https://polyfrost.org/")]);
+            .buttons(vec![Button::new("Get SC Client", "https://github.com/baksyaaaaa/SCClient")]);
 
         if let Err(err) = self.client.set_activity(activity) {
             tracing::warn!("Discord RPC set_activity failed: {err}");
