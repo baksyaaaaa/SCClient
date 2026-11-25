@@ -12,7 +12,7 @@ use crate::hooks::wardrobe::CosmeticBundle;
 use crate::launcher;
 use crate::theme::{colors, rounded, text_size};
 
-const PER_ROW: usize = 4;
+const PER_ROW: usize = 3;
 
 #[derive(PartialEq)]
 pub struct ChromeWardrobe;
@@ -60,13 +60,16 @@ impl Component for ChromeWardrobe {
 
         let mut grid = rect().vertical().spacing(8.).width(Size::fill());
         for row in (0..names.len()).collect::<Vec<_>>().chunks(PER_ROW) {
-            let mut line = rect().horizontal().spacing(8.).width(Size::fill());
+            let mut line = rect().horizontal().content(Content::Flex).spacing(8.).width(Size::fill());
             for &index in row {
                 let button = Button::new()
-                    .width(Size::px(190.))
+                    .width(Size::flex(1.0))
                     .text(names[index])
                     .on_press(move |_| equip(index));
                 line = line.child(if index == equipped { button.primary() } else { button.secondary() });
+            }
+            for _ in row.len()..PER_ROW {   // keep the last row's buttons the same width as the others
+                line = line.child(rect().width(Size::flex(1.0)));
             }
             grid = grid.child(line);
         }
@@ -74,12 +77,12 @@ impl Component for ChromeWardrobe {
         let me = use_my_uuid().map(|id| id.to_string()).unwrap_or_default();
         let (cape, cosmetics) = preview_parts(current.unwrap_or_default());
         let preview = rect()
-            .width(Size::fill())
-            .height(Size::px(460.))
+            .width(Size::px(360.))
+            .height(Size::fill())
             .corner_radius(rounded(12.))
             .background(colors::card())
             .overflow(Overflow::Clip)
-            .child(PlayerModel::new(me).yaw(2.6).zoom(0.72).focus_y(4.).cape(cape).cosmetics(cosmetics).width(Size::fill()).height(Size::fill()));
+            .child(PlayerModel::new(me).yaw(2.95).zoom(0.42).focus_y(2.).cape(cape).cosmetics(cosmetics).width(Size::fill()).height(Size::fill()));
 
         let equipped_text = match current {
             None => "Loading...".to_string(),
@@ -87,8 +90,17 @@ impl Component for ChromeWardrobe {
             Some(_) => format!("Equipped: {}", names[equipped]),
         };
 
-        rect().vertical().width(Size::fill()).height(Size::fill()).overflow(Overflow::Clip).child(
-            ScrollArea::new().width(Size::fill()).height(Size::fill()).child(
+        // the items on the left, the preview on the right (always in view while you pick)
+        rect()
+            .horizontal()
+            .content(Content::Flex)
+            .width(Size::fill())
+            .height(Size::fill())
+            .padding(Gaps::new(0., 40., 32., 0.))
+            .spacing(8.)
+            .overflow(Overflow::Clip)
+            .child(
+            ScrollArea::new().width(Size::flex(1.0)).height(Size::fill()).child(
                 rect()
                     .vertical()
                     .width(Size::fill())
@@ -104,7 +116,6 @@ impl Component for ChromeWardrobe {
                             .color(colors::fg_primary()),
                     )
                     .child(grid)
-                    .child(preview)
                     .maybe_child((!status.read().is_empty()).then(|| {
                         label()
                             .text(status.read().clone())
@@ -114,7 +125,8 @@ impl Component for ChromeWardrobe {
                     }))
                     .child(note()),
             ),
-        )
+            )
+            .child(preview)
     }
 }
 
