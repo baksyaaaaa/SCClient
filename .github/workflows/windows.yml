@@ -16,6 +16,12 @@ concurrency:
 env:
   CARGO_PROFILE_RELEASE_LTO: thin
   CARGO_PROFILE_RELEASE_CODEGEN_UNITS: '16'
+  # Code signing with Microsoft Artifact Signing. It switches on by itself once these are set in the repo settings:
+  #   Secrets:   AZURE_TENANT_ID, AZURE_CLIENT_ID, AZURE_CLIENT_SECRET   (an app registration with the
+  #              "Artifact Signing Certificate Profile Signer" role on the certificate profile)
+  #   Variables: SIGNING_ENDPOINT (e.g. https://eus.codesigning.azure.net/), SIGNING_ACCOUNT, SIGNING_PROFILE
+  # Without them the build stays unsigned, as before.
+  SIGN: ${{ secrets.AZURE_CLIENT_ID != '' && vars.SIGNING_ACCOUNT != '' }}
 
 jobs:
   windows:
@@ -43,6 +49,32 @@ jobs:
         shell: bash
         run: cargo build --release --bin scclient_app
 
+      - name: Put the app aside for signing
+        if: env.SIGN == 'true'
+        shell: pwsh
+        run: New-Item -ItemType Directory -Force to-sign | Out-Null; Move-Item target/release/scclient_app.exe to-sign/
+
+      - name: Sign the app
+        if: env.SIGN == 'true'
+        uses: azure/artifact-signing-action@v2
+        with:
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          endpoint: ${{ vars.SIGNING_ENDPOINT }}
+          signing-account-name: ${{ vars.SIGNING_ACCOUNT }}
+          certificate-profile-name: ${{ vars.SIGNING_PROFILE }}
+          files-folder: ${{ github.workspace }}\to-sign
+          files-folder-filter: exe
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+
+      - name: Put the signed app back
+        if: env.SIGN == 'true'
+        shell: pwsh
+        run: Move-Item to-sign/scclient_app.exe target/release/scclient_app.exe
+
       - name: Stage the VC++ runtime next to the app
         shell: bash
         run: python3 distribution/windows/bundle-crt.py
@@ -65,6 +97,32 @@ jobs:
         env:
           CI: 'true'
         run: cargo packager --release --formats nsis --verbose
+
+      - name: Put the installer aside for signing
+        if: env.SIGN == 'true'
+        shell: pwsh
+        run: New-Item -ItemType Directory -Force to-sign-setup | Out-Null; Move-Item (Get-ChildItem 'target/release/*-setup.exe')[0].FullName to-sign-setup/
+
+      - name: Sign the installer
+        if: env.SIGN == 'true'
+        uses: azure/artifact-signing-action@v2
+        with:
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          endpoint: ${{ vars.SIGNING_ENDPOINT }}
+          signing-account-name: ${{ vars.SIGNING_ACCOUNT }}
+          certificate-profile-name: ${{ vars.SIGNING_PROFILE }}
+          files-folder: ${{ github.workspace }}\to-sign-setup
+          files-folder-filter: exe
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+
+      - name: Put the signed installer back
+        if: env.SIGN == 'true'
+        shell: pwsh
+        run: Move-Item (Get-ChildItem 'to-sign-setup/*-setup.exe')[0].FullName target/release/
 
       - name: Test the installer
         shell: pwsh
