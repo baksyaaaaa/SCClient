@@ -2,7 +2,8 @@
 //!
 //! The menu mod (based on PolyPlus by Polyfrost, GPL-3.0-only) draws its logo from a few SVG / PNG files inside its jar.
 //! This swaps those files in the launcher's downloaded copy for the SC ones in `brand/`, and changes the visible text
-//! "Chrome Client" / "OneClient" (and the all-caps versions) to "SC Client". Only plain text is changed - never names,
+//! "Chrome Client" / "OneClient" to "SC Client", and "Chrome" / "Polyfrost" / "PolyPlus" to "SC" (all-caps versions too), in
+//! the classes and in the language files. Only plain text is changed - never names,
 //! descriptors, file names or web addresses - and not the classes that detect which launcher is in use.
 //! The jar gets a stamp entry when it's done, so a jar that is already branded is left alone.
 
@@ -11,7 +12,7 @@ use std::path::Path;
 use async_zip::{Compression, ZipEntryBuilder};
 
 const STAMP: &str = "scbrand.stamp";
-const VERSION: &[u8] = b"sc-brand 3";
+const VERSION: &[u8] = b"sc-brand 4";
 
 const FILES: &[(&str, &[u8])] = &[
     ("assets/polyplus/mainmenu/logo.svg", include_bytes!("brand/mark.svg")),
@@ -34,6 +35,11 @@ const NAMES: &[(&str, &str)] = &[
     ("CHROME CLIENT", "SC CLIENT"),
     ("OneClient", "SC Client"),
     ("ONECLIENT", "SC CLIENT"),
+    ("PolyPlus", "SC Plus"),
+    ("Polyfrost", "SC"),
+    ("POLYFROST", "SC"),
+    ("Chrome", "SC"),
+    ("CHROME", "SC"),
 ];
 
 fn is_word_char(c: Option<char>) -> bool {
@@ -67,6 +73,21 @@ fn rename(text: &str) -> Option<String> {
         out = result;
     }
     (out != text).then_some(out)
+}
+
+/// Renames the text in a language file (the values, never the keys)
+fn patch_lang(data: &[u8]) -> Option<Vec<u8>> {
+    let mut map: serde_json::Map<String, serde_json::Value> = serde_json::from_slice(data).ok()?;
+    let mut changed = false;
+    for value in map.values_mut() {
+        if let serde_json::Value::String(text) = value
+            && let Some(new) = rename(text)
+        {
+            *text = new;
+            changed = true;
+        }
+    }
+    changed.then(|| serde_json::to_vec_pretty(&map).ok()).flatten()
 }
 
 fn u16_at(data: &[u8], pos: usize) -> Option<usize> {
@@ -179,6 +200,8 @@ pub(crate) async fn brand_jar(path: &Path) -> Result<bool, Box<dyn std::error::E
             reader.reader_with_entry(index).await?.read_to_end_checked(&mut buf).await?;
             let data = if let Some((_, bytes)) = FILES.iter().find(|(n, _)| *n == name) {
                 bytes.to_vec()
+            } else if name.starts_with("assets/polyplus/lang/") && name.ends_with(".json") {
+                patch_lang(&buf).unwrap_or(buf)
             } else if name.ends_with(".class") && !KEEP_CLASSES.iter().any(|k| name.contains(k)) {
                 patch_class(&buf).unwrap_or(buf)
             } else {
@@ -227,5 +250,18 @@ mod tests {
         assert_eq!(rename("OneClients"), None);
         assert_eq!(rename("https://polyfrost.org OneClient"), None);
         assert_eq!(rename("org.polyfrost.OneClient"), None);
+        assert_eq!(rename("Join the Polyfrost Discord").as_deref(), Some("Join the SC Discord"));
+        assert_eq!(rename("Chrome User Indicators").as_deref(), Some("SC User Indicators"));
+        assert_eq!(rename("Couldn't sign in to Chrome.").as_deref(), Some("Couldn't sign in to SC."));
+        assert_eq!(rename("Polyfrost/app"), None);
+        assert_eq!(rename("chromeclient"), None);
+    }
+
+    #[test]
+    fn renames_language_values_not_keys() {
+        let out = patch_lang(br#"{"polyplus.mmc.note":"Chrome note: hi","x.chrome":"plain"}"#).unwrap();
+        let v: serde_json::Value = serde_json::from_slice(&out).unwrap();
+        assert_eq!(v["polyplus.mmc.note"], "SC note: hi");
+        assert_eq!(v["x.chrome"], "plain");
     }
 }

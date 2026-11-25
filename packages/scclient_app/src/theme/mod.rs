@@ -492,7 +492,7 @@ pub fn wordmark(width: f32, height: f32, color: Color) -> Element {
 }
 
 /// Aspect ratio (width / height) of `assets/logo.png`.
-pub const LOGO_ASPECT: f32 = 464. / 240.;
+pub const LOGO_ASPECT: f32 = 600. / 355.;
 
 /// The full-colour SC logo, sized by height.
 pub fn logo_image(height: f32) -> Element {

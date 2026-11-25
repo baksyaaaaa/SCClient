@@ -22,13 +22,13 @@
       <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"></feBlend>
     </filter>
     <linearGradient id="login_tile" x1="60" y1="24" x2="185" y2="246" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#7A64FF"></stop>
-      <stop offset="0.481" stop-color="#415EFF"></stop>
-      <stop offset="1" stop-color="#2B4BFF"></stop>
+      <stop stop-color="#D764FF"></stop>
+      <stop offset="0.481" stop-color="#9641FF"></stop>
+      <stop offset="1" stop-color="#8A2BFF"></stop>
     </linearGradient>
     <linearGradient id="login_avatar" x1="100" y1="72" x2="130" y2="200" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#EAF6FF"></stop>
-      <stop offset="1" stop-color="#C6E1F5"></stop>
+      <stop stop-color="#EBEAFF"></stop>
+      <stop offset="1" stop-color="#C7C6F5"></stop>
     </linearGradient>
     <linearGradient id="login_badge" x1="193" y1="105" x2="257" y2="263" gradientUnits="userSpaceOnUse">
       <stop stop-color="#FF94C2"></stop>

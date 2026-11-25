@@ -24,7 +24,7 @@ const DEFAULT_HEIGHT: f32 = 150.;
 const Y_AXIS_WIDTH: f32 = 44.;
 
 pub const SLICE_COLORS: [Color; 10] = [
-    Color::from_rgb(43, 75, 255),
+    Color::from_rgb(139, 92, 246),
     Color::from_rgb(27, 217, 106),
     Color::from_rgb(241, 100, 54),
     Color::from_rgb(198, 120, 221),

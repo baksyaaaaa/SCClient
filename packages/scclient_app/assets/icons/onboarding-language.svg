@@ -24,13 +24,13 @@
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_17_2767" result="shape"/>
 </filter>
 <linearGradient id="paint0_linear_17_2767" x1="63.244" y1="2.78205e-06" x2="195.749" y2="233.109" gradientUnits="userSpaceOnUse">
-<stop stop-color="#7A64FF"/>
-<stop offset="0.481" stop-color="#415EFF"/>
-<stop offset="1" stop-color="#2B4BFF"/>
+<stop stop-color="#D764FF"/>
+<stop offset="0.481" stop-color="#9641FF"/>
+<stop offset="1" stop-color="#8A2BFF"/>
 </linearGradient>
 <linearGradient id="paint1_linear_17_2767" x1="102.401" y1="-12.4321" x2="134.26" y2="220.105" gradientUnits="userSpaceOnUse">
-<stop stop-color="#EAF6FF"/>
-<stop offset="1" stop-color="#C6E1F5"/>
+<stop stop-color="#EBEAFF"/>
+<stop offset="1" stop-color="#C7C6F5"/>
 </linearGradient>
 <linearGradient id="paint2_linear_17_2767" x1="190.608" y1="102.082" x2="254.16" y2="268.997" gradientUnits="userSpaceOnUse">
 <stop stop-color="#FF94C2"/>

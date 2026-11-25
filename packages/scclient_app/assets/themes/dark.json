@@ -3,13 +3,13 @@
   "radius_scale": 0.6,
   "colors": {
     "light": false,
-    "page": "#070B17",
-    "page_elevated": "#0A1122",
-    "card": "#0E172E",
-    "component": "#111C38",
-    "border": "#3D7BFF2E",
-    "text": "#E4EEFF",
-    "text_secondary": "#7D8CAD",
-    "accent": "#2D6BFF"
+    "page": "#0B0816",
+    "page_elevated": "#100B1F",
+    "card": "#150F29",
+    "component": "#1A1333",
+    "border": "#8B5CF633",
+    "text": "#F1ECFF",
+    "text_secondary": "#9C90C2",
+    "accent": "#8B5CF6"
   }
 }

@@ -337,7 +337,7 @@ pub mod tray {
     #[cfg(target_os = "macos")]
     const REPORT_ID: &str = "scclient.report";
     #[cfg(target_os = "macos")]
-    const HELP_URL: &str = "https://discord.gg/polyfrost";
+    const HELP_URL: &str = "https://github.com/baksyaaaaa/SCClient";
     #[cfg(target_os = "macos")]
     const REPORT_URL: &str = "https://github.com/baksyaaaaa/SCClient/issues/new/choose";
 
