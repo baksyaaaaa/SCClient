@@ -112,7 +112,7 @@ pub use java_install_manager::JavaInstallManager;
 pub use java_prompt::JavaPromptOverlay;
 pub use link_confirm::ConfirmLinkOverlay;
 pub(crate) use lobby::modal;
-pub use lobby::{LobbyHeroChip, PartyTab, use_player_name, use_provide_lobby};
+pub use lobby::{LobbyHeroChip, PartyTab, use_my_uuid, use_player_name, use_provide_lobby};
 pub use local_image::LocalImage;
 pub use log_viewer::{LogViewer, clean_line};
 pub use markdown::{Markdown, MarkdownStyle};

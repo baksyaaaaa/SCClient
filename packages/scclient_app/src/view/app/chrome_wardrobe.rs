@@ -1,10 +1,14 @@
 //! The wardrobe: SC Client's hats, capes and wings (the same list as the in-game mod).
 //! Picks are saved by the launcher, sent to the SC Client service, and put into each game before it starts.
 
+use bytes::Bytes;
 use freya::prelude::*;
 use scclient_core::chrome_service::{self, CATEGORIES, Picks};
+use scclient_scplus::api;
 
-use crate::components::{Button, ScrollArea};
+use crate::assets::AppAssets;
+use crate::components::{Button, PlayerModel, ScrollArea, use_my_uuid};
+use crate::hooks::wardrobe::CosmeticBundle;
 use crate::launcher;
 use crate::theme::{colors, rounded, text_size};
 
@@ -67,6 +71,16 @@ impl Component for ChromeWardrobe {
             grid = grid.child(line);
         }
 
+        let me = use_my_uuid().map(|id| id.to_string()).unwrap_or_default();
+        let (cape, cosmetics) = preview_parts(current.unwrap_or_default());
+        let preview = rect()
+            .width(Size::fill())
+            .height(Size::px(460.))
+            .corner_radius(rounded(12.))
+            .background(colors::card())
+            .overflow(Overflow::Clip)
+            .child(PlayerModel::new(me).yaw(2.6).zoom(0.72).focus_y(4.).cape(cape).cosmetics(cosmetics).width(Size::fill()).height(Size::fill()));
+
         let equipped_text = match current {
             None => "Loading...".to_string(),
             Some(_) if equipped == 0 => "Nothing equipped".to_string(),
@@ -90,6 +104,7 @@ impl Component for ChromeWardrobe {
                             .color(colors::fg_primary()),
                     )
                     .child(grid)
+                    .child(preview)
                     .maybe_child((!status.read().is_empty()).then(|| {
                         label()
                             .text(status.read().clone())
@@ -101,6 +116,24 @@ impl Component for ChromeWardrobe {
             ),
         )
     }
+}
+
+/// The preview's cape texture and hat / wing models for these picks (built from the SC mod's own cosmetics, assets/sc_cosmetics)
+fn preview_parts(picks: Picks) -> (Option<Bytes>, Vec<(api::BodySlot, CosmeticBundle)>) {
+    let cape = (picks.capes > 0).then(|| AppAssets::get_bytes(&format!("sc_cosmetics/cape_{}.png", picks.capes))).flatten();
+    let model = |name: String| CosmeticBundle {
+        geometry: AppAssets::get_bytes(&format!("sc_cosmetics/{name}.geo.json")),
+        texture: AppAssets::get_bytes(&format!("sc_cosmetics/{name}.png")),
+        ..Default::default()
+    };
+    let mut cosmetics = Vec::new();
+    if picks.hats > 0 {
+        cosmetics.push((api::BodySlot::Hat, model(format!("hat_{}", picks.hats))));
+    }
+    if picks.wings > 0 {
+        cosmetics.push((api::BodySlot::Wings, model(format!("wings_{}", picks.wings))));
+    }
+    (cape, cosmetics)
 }
 
 fn header() -> Element {
