@@ -20,7 +20,11 @@ use crate::state::LauncherState;
 
 /// The Chrome Client service. Fixed, like in the mod.
 pub const SERVICE_URL: &str = "https://cosmetics-md7h.onrender.com";
-const MOJANG_JOIN_URL: &str = "https://sessionserver.mojang.com/session/minecraft/join";
+/// Mojang's player certificate: a key pair Mojang signs for the signed-in player (the one Minecraft signs chat with).
+/// Friends sign-in proves who you are with it, so the SC Client service never has to ask Mojang.
+const CERTIFICATE_URL: &str = "https://api.minecraftservices.com/player/certificates";
+/// name -> uuid, for adding a friend who hasn't used SC Client yet (the service can't reach Mojang itself)
+const PROFILE_LOOKUP_URL: &str = "https://api.mojang.com/users/profiles/minecraft/";
 const TIMEOUT: Duration = Duration::from_secs(30);
 
 // ---------------------------------------------------------------- cosmetics
@@ -300,29 +304,14 @@ async fn log_in(state: &Arc<LauncherState>) -> Result<(Uuid, String), String> {
         .ok_or_else(|| "The SC Client service didn't answer. Try again in a moment.".to_string())?
         .to_string();
 
-    let join = state
-        .services
-        .requester
-        .http()
-        .post(MOJANG_JOIN_URL)
-        .timeout(TIMEOUT)
-        .json(&json!({
-            "accessToken": account.access_token,
-            "selectedProfile": account.id.simple().to_string(),
-            "serverId": nonce,
-        }))
-        .send()
-        .await
-        .map_err(|_| "Can't reach Mojang right now.".to_string())?;
-    if !join.status().is_success() {
-        return Err("Mojang didn't accept your session. Sign in again in the launcher.".into());
-    }
+    let (mut cert, signature) = certificate_proof(state, &account.access_token, &nonce).await?;
+    cert["uuid"] = json!(account.id.simple().to_string());
 
     let (status, login) = send(
         state,
         reqwest::Method::POST,
         "/chat/login",
-        Some(json!({ "name": account.username, "nonce": nonce })),
+        Some(json!({ "name": account.username, "nonce": nonce, "cert": cert, "sig": signature })),
         None,
     )
     .await?;
@@ -375,7 +364,98 @@ pub async fn social_state(state: &Arc<LauncherState>) -> Result<SocialState, Str
 }
 
 pub async fn add_friend(state: &Arc<LauncherState>, name: &str) -> Result<(), String> {
-    authed(state, reqwest::Method::POST, "/social/request", Some(json!({ "name": name.trim() }))).await.map(|_| ())
+    let name = name.trim();
+    // look the player up here: the SC Client service can't reach Mojang
+    let uuid = state
+        .services
+        .requester
+        .http()
+        .get(format!("{PROFILE_LOOKUP_URL}{name}"))
+        .timeout(TIMEOUT)
+        .send()
+        .await
+        .ok()
+        .filter(|r| r.status().is_success());
+    let uuid = match uuid {
+        Some(r) => r.json::<Value>().await.ok().and_then(|v| v.get("id").and_then(Value::as_str).map(str::to_string)),
+        None => None,
+    };
+    let mut body = json!({ "name": name });
+    if let Some(uuid) = uuid {
+        body["u"] = json!(uuid);
+    }
+    authed(state, reqwest::Method::POST, "/social/request", Some(body)).await.map(|_| ())
+}
+
+#[derive(Deserialize)]
+struct Certificate {
+    #[serde(rename = "keyPair")]
+    key_pair: KeyPair,
+    #[serde(rename = "publicKeySignatureV2")]
+    signature_v2: String,
+    #[serde(rename = "expiresAt")]
+    expires_at: String,
+}
+
+#[derive(Deserialize)]
+struct KeyPair {
+    #[serde(rename = "privateKey")]
+    private_key: String,
+    #[serde(rename = "publicKey")]
+    public_key: String,
+}
+
+/// The base64 inside a PEM block. Mojang labels its keys "RSA PRIVATE KEY" / "RSA PUBLIC KEY", but the contents are
+/// PKCS#8 and X.509 (SubjectPublicKeyInfo), the way Minecraft itself reads them.
+fn pem_contents(pem: &str) -> String {
+    pem.lines().filter(|l| !l.starts_with("-----")).flat_map(|l| l.trim().chars()).collect()
+}
+
+/// Gets the player certificate with the Minecraft access token and signs the nonce with its private key.
+/// Returns what the service checks: the certificate's public part and the signature.
+async fn certificate_proof(state: &Arc<LauncherState>, access_token: &str, nonce: &str) -> Result<(Value, String), String> {
+    let res = state
+        .services
+        .requester
+        .http()
+        .post(CERTIFICATE_URL)
+        .bearer_auth(access_token)
+        .timeout(TIMEOUT)
+        .send()
+        .await
+        .map_err(|_| "Can't reach Minecraft's services right now.".to_string())?;
+    if res.status() == reqwest::StatusCode::UNAUTHORIZED {
+        return Err("Your Minecraft sign-in ran out. Sign in again in the launcher.".into());
+    }
+    if !res.status().is_success() {
+        return Err(format!("Minecraft's services said no ({}). Try again in a minute.", res.status().as_u16()));
+    }
+    let cert: Certificate = res.json().await.map_err(|_| "Minecraft's services sent something unexpected.".to_string())?;
+    let signature = sign_nonce(&cert.key_pair.private_key, nonce)?;
+
+    Ok((
+        json!({
+            "uuid": "",
+            "expiresAt": cert.expires_at,
+            "publicKey": pem_contents(&cert.key_pair.public_key),
+            "keySig": cert.signature_v2,
+        }),
+        signature,
+    ))
+}
+
+/// SHA256withRSA over the nonce with the certificate's private key, base64 (what the service verifies)
+fn sign_nonce(private_pem: &str, nonce: &str) -> Result<String, String> {
+    use base64::Engine;
+    use base64::engine::general_purpose::STANDARD;
+    use rsa::pkcs1v15::SigningKey;
+    use rsa::pkcs8::DecodePrivateKey;
+    use rsa::sha2::Sha256;
+    use rsa::signature::{SignatureEncoding, Signer};
+
+    let private = STANDARD.decode(pem_contents(private_pem)).map_err(|_| "Couldn't read your Minecraft key.".to_string())?;
+    let key = rsa::RsaPrivateKey::from_pkcs8_der(&private).map_err(|_| "Couldn't read your Minecraft key.".to_string())?;
+    Ok(STANDARD.encode(SigningKey::<Sha256>::new(key).sign(nonce.as_bytes()).to_vec()))
 }
 
 /// `action` is one of accept, decline, cancel, remove
@@ -428,5 +508,19 @@ mod tests {
         assert_eq!(s.friends[0].name, "Steve");
         assert_eq!(s.friends[0].unread, 2);
         assert_eq!(s.incoming[0].name, "Alex");
+    }
+}
+
+#[cfg(test)]
+mod certificate_tests {
+    /// a key pair laid out the way Mojang sends it (PKCS#8 / X.509 contents under "RSA ... KEY" labels)
+    const PRIVATE: &str = include_str!("../tests/fixtures/mojang_style_private.pem");
+
+    #[test]
+    fn signs_the_nonce_with_a_mojang_style_key() {
+        let sig = super::sign_nonce(PRIVATE, "0123456789abcdef0123456789abcdef").unwrap();
+        // printed for the cross-check against Node's crypto.verify (the service's check)
+        println!("SIG={sig}");
+        assert!(sig.len() > 100);
     }
 }

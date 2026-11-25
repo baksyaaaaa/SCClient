@@ -102,6 +102,8 @@ md-5 = {version = "=0.11.0", default-features = false}
 p256 = {version = "=0.14.0", features = ["ecdsa", "pkcs8"]}
 sha1 = {version = "=0.11.0", default-features = false}
 sha2 = {version = "=0.11.0", default-features = false}
+# signs the friends sign-in nonce with the Mojang player certificate key (uses its own sha2 0.10)
+rsa = {version = "0.9", features = ["sha2", "std"]}
 
 # util
 accesskit = {version = "=0.25.2"}
