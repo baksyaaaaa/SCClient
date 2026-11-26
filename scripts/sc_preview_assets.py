@@ -82,13 +82,18 @@ S = 12
 for c in range(1, 29):
     src = Image.open(f'{MOD}/textures/entity/cape_{c}.png').convert('RGBA')
     out = Image.new('RGBA', (64 * S, 32 * S), (0, 0, 0, 0))
-    def put(sx, sy, w, h, dx, dy): out.paste(src.crop((sx * S, sy * S, (sx + w) * S, (sy + h) * S)), (dx * S, dy * S))
+    def put(sx, sy, w, h, dx, dy, flip=False):
+        part = src.crop((sx * S, sy * S, (sx + w) * S, (sy + h) * S))
+        if flip: part = part.transpose(Image.FLIP_LEFT_RIGHT)
+        out.paste(part, (dx * S, dy * S))
+    # the preview draws the standard cape box mirrored compared to the mod's cloth strips, so the faces are flipped and
+    # the two sides swapped - then the cape reads the same way round as in game
     for s in range(4):
         y = 5 * s + 1
-        put(0, y, 1, 4, 0, 1 + 4 * s)     # west side
-        put(1, y, 10, 4, 1, 1 + 4 * s)    # north
-        put(11, y, 1, 4, 11, 1 + 4 * s)   # east side
-        put(12, y, 10, 4, 12, 1 + 4 * s)  # south
+        put(11, y, 1, 4, 0, 1 + 4 * s)            # sides swapped
+        put(1, y, 10, 4, 1, 1 + 4 * s, True)      # north, flipped
+        put(0, y, 1, 4, 11, 1 + 4 * s)
+        put(12, y, 10, 4, 12, 1 + 4 * s, True)    # south, flipped
     put(1, 0, 10, 1, 1, 0)                # top of the first strip
     put(11, 15, 10, 1, 11, 0)             # bottom of the last strip
     out = out.resize((64 * 6, 32 * 6), Image.NEAREST)
